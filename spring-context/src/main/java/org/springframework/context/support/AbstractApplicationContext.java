@@ -313,6 +313,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	@Override
 	public ConfigurableEnvironment getEnvironment() {
 		if (this.environment == null) {
+			logger.info("创建:createEnvironment");
 			this.environment = createEnvironment();
 		}
 		return this.environment;
@@ -324,6 +325,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * a custom {@link ConfigurableEnvironment} implementation.
 	 */
 	protected ConfigurableEnvironment createEnvironment() {
+		logger.info("创建标准环境:StandardEnvironment");
 		return new StandardEnvironment();
 	}
 
@@ -456,6 +458,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * @see org.springframework.core.io.support.PathMatchingResourcePatternResolver
 	 */
 	protected ResourcePatternResolver getResourcePatternResolver() {
+		logger.info("资源解析器:"+PathMatchingResourcePatternResolver.class.getName());
 		return new PathMatchingResourcePatternResolver(this);
 	}
 
@@ -476,6 +479,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	public void setParent(@Nullable ApplicationContext parent) {
 		this.parent = parent;
 		if (parent != null) {
+			logger.info("-------------------[容器有parent]-----------------------------------");
 			Environment parentEnvironment = parent.getEnvironment();
 			if (parentEnvironment instanceof ConfigurableEnvironment) {
 				getEnvironment().merge((ConfigurableEnvironment) parentEnvironment);
@@ -517,9 +521,11 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	public void refresh() throws BeansException, IllegalStateException {
 		synchronized (this.startupShutdownMonitor) {
 			// Prepare this context for refreshing.
+			logger.info("准备刷新");
 			prepareRefresh();
 
 			// Tell the subclass to refresh the internal bean factory.
+			logger.info("obtainFreshBeanFactory");
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
 			// Prepare the bean factory for use in this context.
@@ -593,10 +599,12 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		}
 
 		// Initialize any placeholder property sources in the context environment.
+		logger.info("初始化资源文件 initPropertySources");
 		initPropertySources();
 
 		// Validate that all properties marked as required are resolvable:
 		// see ConfigurablePropertyResolver#setRequiredProperties
+		logger.info("校验必须的参数");
 		getEnvironment().validateRequiredProperties();
 
 		// Store pre-refresh ApplicationListeners...

@@ -109,8 +109,7 @@ public abstract class AbstractEnvironment implements ConfigurableEnvironment {
 
 	private final MutablePropertySources propertySources = new MutablePropertySources(this.logger);
 
-	private final ConfigurablePropertyResolver propertyResolver =
-			new PropertySourcesPropertyResolver(this.propertySources);
+	private final ConfigurablePropertyResolver propertyResolver = new PropertySourcesPropertyResolver(this.propertySources);
 
 
 	/**
@@ -382,9 +381,11 @@ public abstract class AbstractEnvironment implements ConfigurableEnvironment {
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	public Map<String, Object> getSystemProperties() {
 		try {
+			logger.info("加载系统参数:System.getProperties()");
 			return (Map) System.getProperties();
 		}
 		catch (AccessControlException ex) {
+			logger.error("加载系统参数异常:",ex);
 			return (Map) new ReadOnlySystemAttributesMap() {
 				@Override
 				@Nullable
@@ -407,6 +408,7 @@ public abstract class AbstractEnvironment implements ConfigurableEnvironment {
 	@Override
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	public Map<String, Object> getSystemEnvironment() {
+		logger.info("加载系统环境: System.getenv()");
 		if (suppressGetenvAccess()) {
 			return Collections.emptyMap();
 		}

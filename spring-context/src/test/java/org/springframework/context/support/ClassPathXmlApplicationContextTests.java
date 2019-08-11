@@ -49,6 +49,7 @@ import static org.junit.Assert.*;
  * @author Juergen Hoeller
  * @author Chris Beams
  */
+
 public class ClassPathXmlApplicationContextTests {
 
 	private static final String PATH = "/org/springframework/context/support/";
@@ -75,6 +76,7 @@ public class ClassPathXmlApplicationContextTests {
 	@Test
 	public void testSingleConfigLocation() {
 		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(FQ_SIMPLE_CONTEXT);
+
 		assertTrue(ctx.containsBean("someMessageSource"));
 		ctx.close();
 	}
