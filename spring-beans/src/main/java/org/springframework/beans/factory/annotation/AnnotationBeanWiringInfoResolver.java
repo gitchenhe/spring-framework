@@ -29,6 +29,8 @@ import org.springframework.util.ClassUtils;
  * if specified; otherwise the default will be the fully-qualified name of the
  * class being configured.
  *
+ * 注释Bean连接信息解析器
+ *
  * @author Rod Johnson
  * @author Juergen Hoeller
  * @since 2.0
