@@ -22,38 +22,46 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.core.AliasRegistry;
 
 /**
- * bean define 统一注册接口
+ * bean 统一注册接口
+ *
+ * 将定义bean的资源文件,解析成BeanDefine后,需要将其注册到容器中,这个过程由BeanDefinitionRegistry来完成
  *
  */
 public interface BeanDefinitionRegistry extends AliasRegistry {
 
 	/**
-	 *
+	 * 向注册表中注册一个新的BeanDefine实例
 	 */
 	void registerBeanDefinition(String beanName, BeanDefinition beanDefinition)
 			throws BeanDefinitionStoreException;
 
 	/**
+	 * 移除注册表中指定的的BeanDefine实例
 	 */
 	void removeBeanDefinition(String beanName) throws NoSuchBeanDefinitionException;
 
 	/**
+	 * 获取指定的BeanDefine实例
 	 */
 	BeanDefinition getBeanDefinition(String beanName) throws NoSuchBeanDefinitionException;
 
 	/**
+	 * 判断BeanDefine实例是否在注册表中
 	 */
 	boolean containsBeanDefinition(String beanName);
 
 	/**
+	 * 取得注册表中所有BeanDefine实例的beanName标识
 	 */
 	String[] getBeanDefinitionNames();
 
 	/**
+	 * 返回注册表中BeanDefine实例数量
 	 */
 	int getBeanDefinitionCount();
 
 	/**
+	 * 判断beanName是否被占用
 	 */
 	boolean isBeanNameInUse(String beanName);
 
