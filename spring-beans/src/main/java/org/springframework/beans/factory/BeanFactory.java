@@ -60,7 +60,6 @@ public interface BeanFactory {
 	<T> T getBean(Class<T> requiredType, Object... args) throws BeansException;
 
 
-
 	/**
 	 * bean是否存在
 	 */
@@ -93,7 +92,7 @@ public interface BeanFactory {
 	Class<?> getType(String name) throws NoSuchBeanDefinitionException;
 
 	/**
-	 * 为什么返回String[]?
+	 * 获取bean的所有别名
 	 */
 	String[] getAliases(String name);
 

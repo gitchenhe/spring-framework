@@ -61,7 +61,7 @@ public interface BeanDefinitionRegistry extends AliasRegistry {
 	int getBeanDefinitionCount();
 
 	/**
-	 * 判断beanName是否被占用
+	 * 判断beanName是否被占用 包括被 普通的别名占用 和 BeanDefine 占用
 	 */
 	boolean isBeanNameInUse(String beanName);
 

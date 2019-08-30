@@ -19,12 +19,12 @@ package org.springframework.beans.factory;
 import org.springframework.lang.Nullable;
 
 /**
- * BeanFactory的层次结构
+ * <h3>BeanFactory的层次结构</h3>
  */
 public interface HierarchicalBeanFactory extends BeanFactory {
 
 	/**
-	 * Return the parent bean factory, or {@code null} if there is none.
+	 * 父工厂
 	 */
 	@Nullable
 	BeanFactory getParentBeanFactory();

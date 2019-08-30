@@ -37,8 +37,8 @@ public class SimpleAliasRegistry implements AliasRegistry {
 	protected final Log logger = LogFactory.getLog(getClass());
 
 	/**
-	 * key = alias
-	 * value = name
+	 * key = 别名
+	 * value = 真名
 	 */
 	private final Map<String, String> aliasMap = new ConcurrentHashMap<>(16);
 
@@ -218,21 +218,19 @@ public class SimpleAliasRegistry implements AliasRegistry {
 	}
 
 	/**
-	 * Determine the raw name, resolving aliases to canonical names.
-	 * @param name the user-specified name
-	 * @return the transformed name
+	 * <h3>获取name的真实名字</h3>
 	 */
 	public String canonicalName(String name) {
 		String canonicalName = name;
-		// Handle aliasing...
 		String resolvedName;
 		do {
 			resolvedName = this.aliasMap.get(canonicalName);
 			if (resolvedName != null) {
 				canonicalName = resolvedName;
 			}
-		}
-		while (resolvedName != null);
+		}while (resolvedName != null);
+
+
 		return canonicalName;
 	}
 
