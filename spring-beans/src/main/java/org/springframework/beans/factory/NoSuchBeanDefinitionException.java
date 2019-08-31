@@ -21,16 +21,7 @@ import org.springframework.core.ResolvableType;
 import org.springframework.lang.Nullable;
 
 /**
- * Exception thrown when a {@code BeanFactory} is asked for a bean instance for which it
- * cannot find a definition. This may point to a non-existing bean, a non-unique bean,
- * or a manually registered singleton instance without an associated bean definition.
- *
- * @author Rod Johnson
- * @author Juergen Hoeller
- * @author Stephane Nicoll
- * @see BeanFactory#getBean(String)
- * @see BeanFactory#getBean(Class)
- * @see NoUniqueBeanDefinitionException
+ * <h2>bean不存在</h2>
  */
 @SuppressWarnings("serial")
 public class NoSuchBeanDefinitionException extends BeansException {

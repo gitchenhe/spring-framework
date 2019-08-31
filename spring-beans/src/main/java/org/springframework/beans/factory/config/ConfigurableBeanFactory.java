@@ -31,7 +31,8 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.StringValueResolver;
 
 /**
- * 可以通过实现接口,自定义工厂类
+ * <h3>ConfigurableBeanFactory 定义BeanFactory的配置, ConfigurableBeanFactory 定义了太多太多的api,比如 类加载器,类型转换器,属性编辑器,
+ * BeanPostProcessor,作用于Bean定义,处理bean依赖关系,合并其他ConfigurableBeanFactory,bean如何销毁.</h3>
  */
 public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, SingletonBeanRegistry {
 
