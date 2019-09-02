@@ -21,49 +21,26 @@ import org.springframework.beans.factory.config.DependencyDescriptor;
 import org.springframework.lang.Nullable;
 
 /**
- * Strategy interface for determining whether a specific bean definition
- * qualifies as an autowire candidate for a specific dependency.
- *
- * @author Juergen Hoeller
- * @author Mark Fisher
- * @since 2.5
+ * 用于确定特定的bean define,是否符合特定的依赖项的候选者的策略接口
  */
 public interface AutowireCandidateResolver {
 
 	/**
-	 * Determine whether the given bean definition qualifies as an
-	 * autowire candidate for the given dependency.
-	 * <p>The default implementation checks
-	 * {@link org.springframework.beans.factory.config.BeanDefinition#isAutowireCandidate()}.
-	 * @param bdHolder the bean definition including bean name and aliases
-	 * @param descriptor the descriptor for the target method parameter or field
-	 * @return whether the bean definition qualifies as autowire candidate
-	 * @see org.springframework.beans.factory.config.BeanDefinition#isAutowireCandidate()
+	 * 判断给定的bean定义是否允许被依赖注入
 	 */
 	default boolean isAutowireCandidate(BeanDefinitionHolder bdHolder, DependencyDescriptor descriptor) {
 		return bdHolder.getBeanDefinition().isAutowireCandidate();
 	}
 
 	/**
-	 * Determine whether the given descriptor is effectively required.
-	 * <p>The default implementation checks {@link DependencyDescriptor#isRequired()}.
-	 * @param descriptor the descriptor for the target method parameter or field
-	 * @return whether the descriptor is marked as required or possibly indicating
-	 * non-required status some other way (e.g. through a parameter annotation)
-	 * @since 5.0
-	 * @see DependencyDescriptor#isRequired()
+	 * 给定的descriptor是否是必须的~~~
 	 */
 	default boolean isRequired(DependencyDescriptor descriptor) {
 		return descriptor.isRequired();
 	}
 
 	/**
-	 * Determine whether a default value is suggested for the given dependency.
-	 * <p>The default implementation simply returns {@code null}.
-	 * @param descriptor the descriptor for the target method parameter or field
-	 * @return the value suggested (typically an expression String),
-	 * or {@code null} if none found
-	 * @since 3.0
+	 * 给出的默认值,是否是推荐的值
 	 */
 	@Nullable
 	default Object getSuggestedValue(DependencyDescriptor descriptor) {

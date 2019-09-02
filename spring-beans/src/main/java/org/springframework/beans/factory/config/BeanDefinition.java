@@ -120,6 +120,7 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 	void setAutowireCandidate(boolean autowireCandidate);
 
 	/**
+	 * bean define 是否是自动注入的候选者
 	 */
 	boolean isAutowireCandidate();
 

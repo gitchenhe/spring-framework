@@ -41,33 +41,52 @@ import org.springframework.core.ResolvableType;
 import org.springframework.lang.Nullable;
 
 /**
- * Descriptor for a specific dependency that is about to be injected.
- * Wraps a constructor parameter, a method parameter or a field,
- * allowing unified access to their metadata.
- *
- * @author Juergen Hoeller
- * @since 2.5
+ * 被注入依赖的描述
  */
 @SuppressWarnings("serial")
 public class DependencyDescriptor extends InjectionPoint implements Serializable {
 
+	/**
+	 * 声明类
+	 */
 	private final Class<?> declaringClass;
 
+	/**
+	 * 方法名
+	 */
 	@Nullable
 	private String methodName;
 
+	/**
+	 * 参数类型列表
+	 */
 	@Nullable
 	private Class<?>[] parameterTypes;
 
+	/**
+	 * 参数索引
+	 */
 	private int parameterIndex;
 
+	/**
+	 * 变量名
+	 */
 	@Nullable
 	private String fieldName;
 
+	/**
+	 * 必须的
+	 */
 	private final boolean required;
 
+	/**
+	 * 是否需要饿加载
+	 */
 	private final boolean eager;
 
+	/**
+	 * 嵌套层级
+	 */
 	private int nestingLevel = 1;
 
 	@Nullable
@@ -164,13 +183,11 @@ public class DependencyDescriptor extends InjectionPoint implements Serializable
 		if (!this.required) {
 			return false;
 		}
-
 		if (this.field != null) {
-			return !(this.field.getType() == Optional.class || hasNullableAnnotation() ||
-					(KotlinDetector.isKotlinType(this.field.getDeclaringClass()) &&
-							KotlinDelegate.isNullable(this.field)));
-		}
-		else {
+			//this.field.getType() == Optional.class
+			//hasNullableAnnotation
+			return !(this.field.getType() == Optional.class || hasNullableAnnotation() || (KotlinDetector.isKotlinType(this.field.getDeclaringClass()) && KotlinDelegate.isNullable(this.field)));
+		} else {
 			return !obtainMethodParameter().isOptional();
 		}
 	}

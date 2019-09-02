@@ -43,19 +43,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 /**
- * {@link AutowireCandidateResolver} implementation that matches bean definition qualifiers
- * against {@link Qualifier qualifier annotations} on the field or parameter to be autowired.
- * Also supports suggested expression values through a {@link Value value} annotation.
- *
- * <p>Also supports JSR-330's {@link javax.inject.Qualifier} annotation, if available.
- *
- * @author Mark Fisher
- * @author Juergen Hoeller
- * @author Stephane Nicoll
- * @since 2.5
- * @see AutowireCandidateQualifier
- * @see Qualifier
- * @see Value
+ * 它不仅能够处理org.springframework.beans.factory.annotation.Qualifier,还能够处理@Value,还能处理泛型的依赖注入
  */
 public class QualifierAnnotationAutowireCandidateResolver extends GenericTypeAwareAutowireCandidateResolver {
 
@@ -65,11 +53,7 @@ public class QualifierAnnotationAutowireCandidateResolver extends GenericTypeAwa
 
 
 	/**
-	 * Create a new QualifierAnnotationAutowireCandidateResolver
-	 * for Spring's standard {@link Qualifier} annotation.
-	 * <p>Also supports JSR-330's {@link javax.inject.Qualifier} annotation, if available.
 	 */
-	@SuppressWarnings("unchecked")
 	public QualifierAnnotationAutowireCandidateResolver() {
 		this.qualifierTypes.add(Qualifier.class);
 		try {
@@ -77,14 +61,10 @@ public class QualifierAnnotationAutowireCandidateResolver extends GenericTypeAwa
 							QualifierAnnotationAutowireCandidateResolver.class.getClassLoader()));
 		}
 		catch (ClassNotFoundException ex) {
-			// JSR-330 API not available - simply skip.
 		}
 	}
 
 	/**
-	 * Create a new QualifierAnnotationAutowireCandidateResolver
-	 * for the given qualifier annotation type.
-	 * @param qualifierType the qualifier annotation to look for
 	 */
 	public QualifierAnnotationAutowireCandidateResolver(Class<? extends Annotation> qualifierType) {
 		Assert.notNull(qualifierType, "'qualifierType' must not be null");

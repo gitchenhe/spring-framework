@@ -27,15 +27,8 @@ import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 
 /**
- * A simple descriptor for an injection point, pointing to a method/constructor
- * parameter or a field. Exposed by {@link UnsatisfiedDependencyException}.
- * Also available as an argument for factory methods, reacting to the
- * requesting injection point for building a customized bean instance.
+ * 方法和构造函数的切点
  *
- * @author Juergen Hoeller
- * @since 4.3
- * @see UnsatisfiedDependencyException#getInjectionPoint()
- * @see org.springframework.beans.factory.config.DependencyDescriptor
  */
 public class InjectionPoint {
 
@@ -59,8 +52,6 @@ public class InjectionPoint {
 	}
 
 	/**
-	 * Create an injection point descriptor for a field.
-	 * @param field the field to wrap
 	 */
 	public InjectionPoint(Field field) {
 		Assert.notNull(field, "Field must not be null");

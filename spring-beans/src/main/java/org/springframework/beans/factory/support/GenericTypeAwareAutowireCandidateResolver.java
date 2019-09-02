@@ -30,15 +30,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.ClassUtils;
 
 /**
- * Basic {@link AutowireCandidateResolver} that performs a full generic type
- * match with the candidate's type if the dependency is declared as a generic type
- * (e.g. Repository&lt;Customer&gt;).
- *
- * <p>This is the base class for
- * {@link org.springframework.beans.factory.annotation.QualifierAnnotationAutowireCandidateResolver},
- * providing an implementation all non-annotation-based resolution steps at this level.
- *
- * @author Juergen Hoeller
+ * 泛型依赖注入
  * @since 4.0
  */
 public class GenericTypeAwareAutowireCandidateResolver extends SimpleAutowireCandidateResolver
@@ -59,29 +51,37 @@ public class GenericTypeAwareAutowireCandidateResolver extends SimpleAutowireCan
 	}
 
 
+	/**
+	 * 是否允许被依赖
+	 * @param bdHolder
+	 * @param descriptor
+	 * @return
+	 */
 	@Override
 	public boolean isAutowireCandidate(BeanDefinitionHolder bdHolder, DependencyDescriptor descriptor) {
+		//如果bean里定义了不允许被依赖,就不往下走了
 		if (!super.isAutowireCandidate(bdHolder, descriptor)) {
-			// If explicitly false, do not proceed with any other checks...
 			return false;
 		}
+
 		return checkGenericTypeMatch(bdHolder, descriptor);
 	}
 
 	/**
-	 * Match the given dependency type with its generic type information against the given
-	 * candidate bean definition.
+	 * 候选的类型是否符合泛型
 	 */
 	protected boolean checkGenericTypeMatch(BeanDefinitionHolder bdHolder, DependencyDescriptor descriptor) {
 		ResolvableType dependencyType = descriptor.getResolvableType();
+
+		//类型匹配,直接返回
 		if (dependencyType.getType() instanceof Class) {
-			// No generic type -> we know it's a Class type-match, so no need to check again.
 			return true;
 		}
 
 		ResolvableType targetType = null;
 		boolean cacheType = false;
 		RootBeanDefinition rbd = null;
+
 		if (bdHolder.getBeanDefinition() instanceof RootBeanDefinition) {
 			rbd = (RootBeanDefinition) bdHolder.getBeanDefinition();
 		}

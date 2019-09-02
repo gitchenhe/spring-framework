@@ -42,56 +42,68 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.ObjectUtils;
 
 /**
- * Helper class that encapsulates the specification of a method parameter, i.e. a {@link Method}
- * or {@link Constructor} plus a parameter index and a nested type index for a declared generic
- * type. Useful as a specification object to pass along.
- *
- * <p>As of 4.2, there is a {@link org.springframework.core.annotation.SynthesizingMethodParameter}
- * subclass available which synthesizes annotations with attribute aliases. That subclass is used
- * for web and message endpoint processing, in particular.
- *
- * @author Juergen Hoeller
- * @author Rob Harrop
- * @author Andy Clement
- * @author Sam Brannen
- * @author Sebastien Deleuze
- * @since 2.0
- * @see org.springframework.core.annotation.SynthesizingMethodParameter
+ * 帮助类,封装方法参数
  */
 public class MethodParameter {
 
+	/**
+	 * 注解列表
+	 */
 	private static final Annotation[] EMPTY_ANNOTATION_ARRAY = new Annotation[0];
-
 
 	private final Executable executable;
 
+	/**
+	 * 参数索引
+	 */
 	private final int parameterIndex;
 
+	/**
+	 * 参数
+	 */
 	@Nullable
 	private volatile Parameter parameter;
 
+	/**
+	 * 嵌套级别
+	 */
 	private int nestingLevel;
 
-	/** Map from Integer level to Integer type index */
+	/** 每级索引 */
 	@Nullable
 	Map<Integer, Integer> typeIndexesPerLevel;
 
-	/** The containing class. Could also be supplied by overriding {@link #getContainingClass()} */
+	/** 包含类,可以提供覆盖 */
 	@Nullable
 	private volatile Class<?> containingClass;
 
+	/**
+	 * 参数类型
+	 */
 	@Nullable
 	private volatile Class<?> parameterType;
 
+	/**
+	 * 泛型参数类型
+	 */
 	@Nullable
 	private volatile Type genericParameterType;
 
+	/**
+	 * 参数注解
+	 */
 	@Nullable
 	private volatile Annotation[] parameterAnnotations;
 
+	/**
+	 * 参数发现
+	 */
 	@Nullable
 	private volatile ParameterNameDiscoverer parameterNameDiscoverer;
 
+	/**
+	 * 参数名
+	 */
 	@Nullable
 	private volatile String parameterName;
 
