@@ -21,11 +21,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 
 /**
- * Holder for a key-value style attribute that is part of a bean definition.
- * Keeps track of the definition source in addition to the key-value pair.
- *
- * @author Juergen Hoeller
- * @since 2.5
+ * 有三个属性,name:属性名; value:属性值; source,属性归属的实例
  */
 public class BeanMetadataAttribute implements BeanMetadataElement {
 
@@ -38,11 +34,7 @@ public class BeanMetadataAttribute implements BeanMetadataElement {
 	private Object source;
 
 
-	/**
-	 * Create a new AttributeValue instance.
-	 * @param name the name of the attribute (never {@code null})
-	 * @param value the value of the attribute (possibly before type conversion)
-	 */
+
 	public BeanMetadataAttribute(String name, @Nullable Object value) {
 		Assert.notNull(name, "Name must not be null");
 		this.name = name;
@@ -51,14 +43,14 @@ public class BeanMetadataAttribute implements BeanMetadataElement {
 
 
 	/**
-	 * Return the name of the attribute.
+	 * 返回属性名
 	 */
 	public String getName() {
 		return this.name;
 	}
 
 	/**
-	 * Return the value of the attribute.
+	 * 返回是行之
 	 */
 	@Nullable
 	public Object getValue() {
@@ -66,8 +58,7 @@ public class BeanMetadataAttribute implements BeanMetadataElement {
 	}
 
 	/**
-	 * Set the configuration source {@code Object} for this metadata element.
-	 * <p>The exact type of the object will depend on the configuration mechanism used.
+	 * 设置属性归属的实例
 	 */
 	public void setSource(@Nullable Object source) {
 		this.source = source;

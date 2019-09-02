@@ -25,14 +25,9 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
- * Support class for {@link AttributeAccessor AttributeAccessors}, providing
- * a base implementation of all methods. To be extended by subclasses.
+ * <h3>定义了对对象属性的访问与修改</h3>
+ * 存储属性名-属性值
  *
- * <p>{@link Serializable} if subclasses and all attribute values are {@link Serializable}.
- *
- * @author Rob Harrop
- * @author Juergen Hoeller
- * @since 2.0
  */
 @SuppressWarnings("serial")
 public abstract class AttributeAccessorSupport implements AttributeAccessor, Serializable {

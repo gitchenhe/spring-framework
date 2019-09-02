@@ -32,19 +32,12 @@ import org.springframework.beans.factory.FactoryBeanNotInitializedException;
 import org.springframework.lang.Nullable;
 
 /**
- * Support base class for singleton registries which need to handle
- * {@link org.springframework.beans.factory.FactoryBean} instances,
- * integrated with {@link DefaultSingletonBeanRegistry}'s singleton management.
- *
- * <p>Serves as base class for {@link AbstractBeanFactory}.
- *
- * @author Juergen Hoeller
- * @since 2.5.1
+ * 类的主要功能是,通过FactoryBean创建实例,并缓存FactoryBean与之创建的实例
  */
 public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanRegistry {
 
 	/**
-	 * 存放由factoryBean 创建的单例对象, FactoryBeanName -> Instance
+	 * 存放由 factoryBean 创建的单例对象, FactoryBeanName -> Instance
 	  */
 	private final Map<String, Object> factoryBeanObjectCache = new ConcurrentHashMap<>(16);
 
@@ -79,6 +72,19 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 	}
 
 	/**
+	 * <h3>通过FactoryBean创建实例</h3>
+	 *  本方法主要关注两点
+	 *
+	 * <pre>
+	 * 1. 实例是否是单例的,如果是的话,先检查单例集合中是否存在,存在的话直接返回.
+	 * 	  不存在的话,锁住单例集合,通过检查本地的factoryBeanObjectCache来检查是否有实例穿在
+	 * 	  	如果存在,直接返回
+	 * 	    如果不存在,通过FactoryBean创建实例,创建成功后,再次检查本地缓存factoryBeanObjectCache,实例是否被创建,
+	 * 	    	如果已经创建,直接返回
+	 * 	    	如果未创建,把上一步创建的实例缓存,并发布时间,调用实例创建后置程序
+	 * 	2. 实例不是单例的, 每次都调用FactoryBean.getObject(),创建新实例,并调用 bean post process
+	 * </pre>
+	 *
 	 */
 	protected Object getObjectFromFactoryBean(FactoryBean<?> factory, String beanName, boolean shouldPostProcess) {
 		//是单例,并且实例已经被创建
@@ -89,7 +95,7 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 
 				//获取factoryBean尚未创建过实例
 				if (object == null) {
-					//使用factoryBean创建实例
+					//使用factoryBean创建实例,实际上调用FactoryBean.getObject()
 					object = doGetObjectFromFactoryBean(factory, beanName);
 
 					//再次判断factoryBean是否已经创建过实例
@@ -98,15 +104,16 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 					if (alreadyThere != null) {
 						//使用先创建的实例
 						object = alreadyThere;
-					}
-					else {
+					}else {
+						//如果需要发布bean创建后流程
 						if (shouldPostProcess) {
 							if (isSingletonCurrentlyInCreation(beanName)) {
-								// Temporarily return non-post-processed object, not storing it yet..
+								// 走到这里,说明有其他线程,走到了 beforeSingletonCreation(beanName);
 								return object;
 							}
 							beforeSingletonCreation(beanName);
 							try {
+								//发布bean实例创建事件
 								object = postProcessObjectFromFactoryBean(object, beanName);
 							}
 							catch (Throwable ex) {
@@ -124,9 +131,13 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 				}
 				return object;
 			}
-		}
-		else {
+		}else {
+			//对象不是单例的
+
+			//创建实例
 			Object object = doGetObjectFromFactoryBean(factory, beanName);
+
+			//是否需要发布创建流程
 			if (shouldPostProcess) {
 				try {
 					object = postProcessObjectFromFactoryBean(object, beanName);
@@ -180,25 +191,17 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 	}
 
 	/**
-	 * Post-process the given object that has been obtained from the FactoryBean.
-	 * The resulting object will get exposed for bean references.
-	 * <p>The default implementation simply returns the given object as-is.
-	 * Subclasses may override this, for example, to apply post-processors.
-	 * @param object the object obtained from the FactoryBean.
-	 * @param beanName the name of the bean
-	 * @return the object to expose
-	 * @throws org.springframework.beans.BeansException if any post-processing failed
+	 *
+	 * 从FactoryBean创建的实例的后置处理程序.
+	 * 生成的对象将暴露给bean引用
+	 *
 	 */
 	protected Object postProcessObjectFromFactoryBean(Object object, String beanName) throws BeansException {
 		return object;
 	}
 
 	/**
-	 * Get a FactoryBean for the given bean if possible.
-	 * @param beanName the name of the bean
-	 * @param beanInstance the corresponding bean instance
-	 * @return the bean instance as FactoryBean
-	 * @throws BeansException if the given bean cannot be exposed as a FactoryBean
+	 * 获取给定bean的FactoryBean
 	 */
 	protected FactoryBean<?> getFactoryBean(String beanName, Object beanInstance) throws BeansException {
 		if (!(beanInstance instanceof FactoryBean)) {

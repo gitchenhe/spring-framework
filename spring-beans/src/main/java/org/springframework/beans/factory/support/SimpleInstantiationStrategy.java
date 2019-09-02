@@ -47,9 +47,7 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 
 
 	/**
-	 * Return the factory method currently being invoked or {@code null} if none.
-	 * <p>Allows factory method implementations to determine whether the current
-	 * caller is the container itself as opposed to user code.
+	 * 返回当前正在调用的工厂方法,如果没有返回 null
 	 */
 	@Nullable
 	public static Method getCurrentlyInvokedFactoryMethod() {
