@@ -20,6 +20,8 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.lang.Nullable;
 
 /**
+ * 标准bean define.除了具有指定类,可选的构造参数,可选的构造参数值和属性参数这些其它bean definition一样的特性外，
+ * 它还具有通过parenetName属性来灵活设置parent bean definition。
  * GenericBeanDefinition is a one-stop shop for standard bean definition purposes.
  * Like any bean definition, it allows for specifying a class plus optionally
  * constructor argument values and property values. Additionally, deriving from a

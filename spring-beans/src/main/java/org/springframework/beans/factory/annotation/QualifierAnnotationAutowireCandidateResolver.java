@@ -53,6 +53,7 @@ public class QualifierAnnotationAutowireCandidateResolver extends GenericTypeAwa
 
 
 	/**
+	 * 支持的注解类型，默认支持@Qualifier和JSR-330的javax.inject.Qualifier注解
 	 */
 	public QualifierAnnotationAutowireCandidateResolver() {
 		this.qualifierTypes.add(Qualifier.class);
@@ -65,17 +66,14 @@ public class QualifierAnnotationAutowireCandidateResolver extends GenericTypeAwa
 	}
 
 	/**
+	 * 你可可以通过构造函数，增加你自定义的注解的支持
 	 */
 	public QualifierAnnotationAutowireCandidateResolver(Class<? extends Annotation> qualifierType) {
 		Assert.notNull(qualifierType, "'qualifierType' must not be null");
+		//注意是add
 		this.qualifierTypes.add(qualifierType);
 	}
 
-	/**
-	 * Create a new QualifierAnnotationAutowireCandidateResolver
-	 * for the given qualifier annotation types.
-	 * @param qualifierTypes the qualifier annotations to look for
-	 */
 	public QualifierAnnotationAutowireCandidateResolver(Set<Class<? extends Annotation>> qualifierTypes) {
 		Assert.notNull(qualifierTypes, "'qualifierTypes' must not be null");
 		this.qualifierTypes.addAll(qualifierTypes);
@@ -83,27 +81,14 @@ public class QualifierAnnotationAutowireCandidateResolver extends GenericTypeAwa
 
 
 	/**
-	 * Register the given type to be used as a qualifier when autowiring.
-	 * <p>This identifies qualifier annotations for direct use (on fields,
-	 * method parameters and constructor parameters) as well as meta
-	 * annotations that in turn identify actual qualifier annotations.
-	 * <p>This implementation only supports annotations as qualifier types.
-	 * The default is Spring's {@link Qualifier} annotation which serves
-	 * as a qualifier for direct use and also as a meta annotation.
-	 * @param qualifierType the annotation type to register
+	 *  后面讲的CustomAutowireConfigurer 它会调用这个方法来自定义注解
 	 */
 	public void addQualifierType(Class<? extends Annotation> qualifierType) {
 		this.qualifierTypes.add(qualifierType);
 	}
 
 	/**
-	 * Set the 'value' annotation type, to be used on fields, method parameters
-	 * and constructor parameters.
-	 * <p>The default value annotation type is the Spring-provided
-	 * {@link Value} annotation.
-	 * <p>This setter property exists so that developers can provide their own
-	 * (non-Spring-specific) annotation type to indicate a default value
-	 * expression for a specific argument.
+	 * @Value 注解类型Spring也是允许我们改成自己的类型的
 	 */
 	public void setValueAnnotationType(Class<? extends Annotation> valueAnnotationType) {
 		this.valueAnnotationType = valueAnnotationType;
@@ -111,21 +96,18 @@ public class QualifierAnnotationAutowireCandidateResolver extends GenericTypeAwa
 
 
 	/**
-	 * Determine whether the provided bean definition is an autowire candidate.
-	 * <p>To be considered a candidate the bean's <em>autowire-candidate</em>
-	 * attribute must not have been set to 'false'. Also, if an annotation on
-	 * the field or parameter to be autowired is recognized by this bean factory
-	 * as a <em>qualifier</em>, the bean must 'match' against the annotation as
-	 * well as any attributes it may contain. The bean definition must contain
-	 * the same qualifier or match by meta attributes. A "value" attribute will
-	 * fallback to match against the bean name or an alias if a qualifier or
-	 * attribute does not match.
-	 * @see Qualifier
+	 * <h3>决定提供的bean define 是否是自动注入的候选者</h3>
+	 * <p>需要考虑提供的bean define 是否是 autowire-candidate = true</p>
+	 *
 	 */
 	@Override
 	public boolean isAutowireCandidate(BeanDefinitionHolder bdHolder, DependencyDescriptor descriptor) {
+		//父类是否匹配的上
 		boolean match = super.isAutowireCandidate(bdHolder, descriptor);
+
+		//父类匹配上
 		if (match) {
+
 			match = checkQualifiers(bdHolder, descriptor.getAnnotations());
 			if (match) {
 				MethodParameter methodParam = descriptor.getMethodParameter();
@@ -141,7 +123,7 @@ public class QualifierAnnotationAutowireCandidateResolver extends GenericTypeAwa
 	}
 
 	/**
-	 * Match the given qualifier annotations against the candidate bean definition.
+	 * 匹配给定的限定符注释对候选人bean定义
 	 */
 	protected boolean checkQualifiers(BeanDefinitionHolder bdHolder, Annotation[] annotationsToSearch) {
 		if (ObjectUtils.isEmpty(annotationsToSearch)) {

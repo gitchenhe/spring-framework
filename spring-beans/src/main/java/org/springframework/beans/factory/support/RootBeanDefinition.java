@@ -244,6 +244,10 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
 	}
 
 
+	/**
+	 * 父容器返回null
+	 * @return
+	 */
 	@Override
 	public String getParentName() {
 		return null;

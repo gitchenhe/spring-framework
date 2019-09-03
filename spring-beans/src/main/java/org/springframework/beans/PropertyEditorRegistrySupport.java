@@ -82,12 +82,6 @@ import org.springframework.util.ClassUtils;
  * Provides management of default editors and custom editors.
  * Mainly serves as base class for {@link BeanWrapperImpl}.
  *
- * @author Juergen Hoeller
- * @author Rob Harrop
- * @since 1.2.6
- * @see java.beans.PropertyEditorManager
- * @see java.beans.PropertyEditorSupport#setAsText
- * @see java.beans.PropertyEditorSupport#setValue
  */
 public class PropertyEditorRegistrySupport implements PropertyEditorRegistry {
 
@@ -98,25 +92,38 @@ public class PropertyEditorRegistrySupport implements PropertyEditorRegistry {
 
 	private boolean configValueEditorsActive = false;
 
+	/**
+	 * 默认类型转换器集合
+	 */
 	@Nullable
 	private Map<Class<?>, PropertyEditor> defaultEditors;
 
+	/**
+	 * 被重写的默认转换器
+	 */
 	@Nullable
 	private Map<Class<?>, PropertyEditor> overriddenDefaultEditors;
 
+	/**
+	 * 自定义转换器
+	 */
 	@Nullable
 	private Map<Class<?>, PropertyEditor> customEditors;
 
+	/**
+	 * 自定义转换器
+	 */
 	@Nullable
 	private Map<String, CustomEditorHolder> customEditorsForPath;
 
+	/**
+	 * 自定义转换器缓存
+	 */
 	@Nullable
 	private Map<Class<?>, PropertyEditor> customEditorCache;
 
 
 	/**
-	 * Specify a Spring 3.0 ConversionService to use for converting
-	 * property values, as an alternative to JavaBeans PropertyEditors.
 	 */
 	public void setConversionService(@Nullable ConversionService conversionService) {
 		this.conversionService = conversionService;

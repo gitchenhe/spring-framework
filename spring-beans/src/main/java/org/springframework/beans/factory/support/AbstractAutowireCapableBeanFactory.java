@@ -105,17 +105,7 @@ import org.springframework.util.StringUtils;
  * {@link BeanDefinitionRegistry} interfaces, which represent the API and SPI
  * view of such a factory, respectively.
  *
- * @author Rod Johnson
- * @author Juergen Hoeller
- * @author Rob Harrop
- * @author Mark Fisher
- * @author Costin Leau
- * @author Chris Beams
- * @author Sam Brannen
- * @since 13.02.2004
- * @see RootBeanDefinition
- * @see DefaultListableBeanFactory
- * @see BeanDefinitionRegistry
+ * 具有自动装配能力的bean factory
  */
 public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory
 		implements AutowireCapableBeanFactory {
@@ -445,8 +435,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	//---------------------------------------------------------------------
 
 	/**
-	 * Central method of this class: creates a bean instance,
-	 * populates the bean instance, applies post-processors, etc.
+	 * 方法的核心是: 创建实例,并调用 bean post process
 	 * @see #doCreateBean
 	 */
 	@Override
@@ -467,7 +456,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			mbdToUse.setBeanClass(resolvedClass);
 		}
 
-		// Prepare method overrides.
+		// 准备覆盖方法.
 		try {
 			mbdToUse.prepareMethodOverrides();
 		}
@@ -477,7 +466,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		try {
-			// Give BeanPostProcessors a chance to return a proxy instead of the target bean instance.
+			// 让bean 后置处理程序返回一个代理,而不是直接使用实例
 			Object bean = resolveBeforeInstantiation(beanName, mbdToUse);
 			if (bean != null) {
 				return bean;
@@ -523,14 +512,18 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	protected Object doCreateBean(final String beanName, final RootBeanDefinition mbd, final @Nullable Object[] args)
 			throws BeanCreationException {
 
-		// Instantiate the bean.
+		// 实例化bean
 		BeanWrapper instanceWrapper = null;
 		if (mbd.isSingleton()) {
+			//如果是单例,首先移除缓存
 			instanceWrapper = this.factoryBeanInstanceCache.remove(beanName);
 		}
+
+		//实例化bean,将bean define转换成bean wrapper
 		if (instanceWrapper == null) {
 			instanceWrapper = createBeanInstance(beanName, mbd, args);
 		}
+
 		final Object bean = instanceWrapper.getWrappedInstance();
 		Class<?> beanType = instanceWrapper.getWrappedClass();
 		if (beanType != NullBean.class) {

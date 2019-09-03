@@ -53,8 +53,7 @@ public abstract class BeanFactoryUtils {
 
 
 	/**
-	 * Return whether the given name is a factory dereference
-	 * (beginning with the factory dereference prefix).
+	 * 返回给定名称是否工厂废弃,name是以&开头
 	 * @param name the name of the bean
 	 * @return whether the given name is a factory dereference
 	 * @see BeanFactory#FACTORY_BEAN_PREFIX
@@ -64,8 +63,7 @@ public abstract class BeanFactoryUtils {
 	}
 
 	/**
-	 * Return the actual bean name, stripping out the factory dereference
-	 * prefix (if any, also stripping repeated factory prefixes if found).
+	 * 返回实际的bean名称,剔除前缀&
 	 * @param name the name of the bean
 	 * @return the transformed name
 	 * @see BeanFactory#FACTORY_BEAN_PREFIX
@@ -80,8 +78,7 @@ public abstract class BeanFactoryUtils {
 	}
 
 	/**
-	 * Return whether the given name is a bean name which has been generated
-	 * by the default naming strategy (containing a "#..." part).
+	 * 返回给定的名称是一个bean名称是否已生成的默认命名策略
 	 * @param name the name of the bean
 	 * @return whether the given name is a generated bean name
 	 * @see #GENERATED_BEAN_NAME_SEPARATOR

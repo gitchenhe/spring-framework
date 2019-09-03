@@ -36,15 +36,7 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.ObjectUtils;
 
 /**
- * Context about a type to convert from or to.
- *
- * @author Keith Donald
- * @author Andy Clement
- * @author Juergen Hoeller
- * @author Phillip Webb
- * @author Sam Brannen
- * @author Stephane Nicoll
- * @since 3.0
+ * 关于类型转换上下文
  */
 @SuppressWarnings("serial")
 public class TypeDescriptor implements Serializable {
@@ -262,35 +254,25 @@ public class TypeDescriptor implements Serializable {
 	}
 
 	/**
-	 * Returns true if an object of this type descriptor can be assigned to the location
-	 * described by the given type descriptor.
-	 * <p>For example, {@code valueOf(String.class).isAssignableTo(valueOf(CharSequence.class))}
-	 * returns {@code true} because a String value can be assigned to a CharSequence variable.
-	 * On the other hand, {@code valueOf(Number.class).isAssignableTo(valueOf(Integer.class))}
-	 * returns {@code false} because, while all Integers are Numbers, not all Numbers are Integers.
-	 * <p>For arrays, collections, and maps, element and key/value types are checked if declared.
-	 * For example, a List&lt;String&gt; field value is assignable to a Collection&lt;CharSequence&gt;
-	 * field, but List&lt;Number&gt; is not assignable to List&lt;Integer&gt;.
-	 * @return {@code true} if this type is assignable to the type represented by the provided
-	 * type descriptor
-	 * @see #getObjectType()
+	 * 当前类型是否可以转换到指定类型
 	 */
 	public boolean isAssignableTo(TypeDescriptor typeDescriptor) {
 		boolean typesAssignable = typeDescriptor.getObjectType().isAssignableFrom(getObjectType());
+		//类型不一致,返回false
 		if (!typesAssignable) {
 			return false;
 		}
+		//都是数组类型
 		if (isArray() && typeDescriptor.isArray()) {
 			return isNestedAssignable(getElementTypeDescriptor(), typeDescriptor.getElementTypeDescriptor());
-		}
-		else if (isCollection() && typeDescriptor.isCollection()) {
+		}else if (isCollection() && typeDescriptor.isCollection()) {
+			//都是集合类型
 			return isNestedAssignable(getElementTypeDescriptor(), typeDescriptor.getElementTypeDescriptor());
-		}
-		else if (isMap() && typeDescriptor.isMap()) {
+		} else if (isMap() && typeDescriptor.isMap()) {
+			//都是字典类型
 			return isNestedAssignable(getMapKeyTypeDescriptor(), typeDescriptor.getMapKeyTypeDescriptor()) &&
 				isNestedAssignable(getMapValueTypeDescriptor(), typeDescriptor.getMapValueTypeDescriptor());
-		}
-		else {
+		}else {
 			return true;
 		}
 	}
@@ -792,5 +774,4 @@ public class TypeDescriptor implements Serializable {
 			return TypeDescriptor.this.toString();
 		}
 	}
-
 }

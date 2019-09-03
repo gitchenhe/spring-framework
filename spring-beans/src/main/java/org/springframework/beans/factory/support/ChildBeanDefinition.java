@@ -22,7 +22,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.ObjectUtils;
 
 /**
- * Bean definition for beans which inherit settings from their parent.
+ * 从父类继承构造参数值,属性值,并可以重写父类方法,可以增加新的属性或方法
  * Child bean definitions have a fixed dependency on a parent bean definition.
  *
  * <p>A child bean definition will inherit constructor argument values,

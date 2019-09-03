@@ -22,13 +22,14 @@ import org.springframework.lang.Nullable;
 
 /**
  * 1.定义了通过别名或类型,检索bean实例的几种方式
- * 2.通过&beanName,获取bean的facotry
+ * 	通过beanName,获取的是FactoryBean getObject()创建的对象
+ * 	通过&beanName,获取的是工厂方法创建的对象
  */
 public interface BeanFactory {
 
 	/**
-	 *
-	 * 通过&beanName,获取bean的工厂类
+	 * 1.通过beanName,获取的是FactoryBean getObject()创建的对象
+	 * 2.通过&beanName,获取的是工厂方法创建的对象
 	 */
 	String FACTORY_BEAN_PREFIX = "&";
 

@@ -296,7 +296,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 
 	//---------------------------------------------------------------------
-	// Implementation of remaining BeanFactory methods
+	// 实现剩余的BeanFactory方法
 	//---------------------------------------------------------------------
 
 	@Override
@@ -354,8 +354,18 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		return getBeanNamesForType(type, true, true);
 	}
 
+	/**
+	 * 获取Bean Names
+	 * @param type
+	 * @param includeNonSingletons 包括非单例
+	 * @param allowEagerInit 允许饿汉式初始化
+	 * @return
+	 */
 	@Override
 	public String[] getBeanNamesForType(@Nullable Class<?> type, boolean includeNonSingletons, boolean allowEagerInit) {
+		//bean define 未被冻结
+		// type == null
+		// 不允许饿加载
 		if (!isConfigurationFrozen() || type == null || !allowEagerInit) {
 			return doGetBeanNamesForType(ResolvableType.forRawClass(type), includeNonSingletons, allowEagerInit);
 		}
@@ -375,14 +385,17 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	private String[] doGetBeanNamesForType(ResolvableType type, boolean includeNonSingletons, boolean allowEagerInit) {
 		List<String> result = new ArrayList<>();
 
-		// Check all bean definitions.
+		// 遍历所有 bean name
 		for (String beanName : this.beanDefinitionNames) {
-			// Only consider bean as eligible if the bean name
-			// is not defined as alias for some other bean.
+			// 只考虑bean name 是非别名
 			if (!isAlias(beanName)) {
 				try {
 					RootBeanDefinition mbd = getMergedLocalBeanDefinition(beanName);
 					// Only check bean definition if it is complete.
+					//rootBeanDefine是非抽象的
+					//允许饿加载 或 指定了bean class 或 不是lazyIni 或 允许 饿加载
+
+
 					if (!mbd.isAbstract() && (allowEagerInit ||
 							(mbd.hasBeanClass() || !mbd.isLazyInit() || isAllowEagerClassLoading()) &&
 									!requiresEagerInitForType(mbd.getFactoryBeanName()))) {
@@ -404,8 +417,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 							result.add(beanName);
 						}
 					}
-				}
-				catch (CannotLoadBeanClassException ex) {
+				}catch (CannotLoadBeanClassException ex) {
 					if (allowEagerInit) {
 						throw ex;
 					}
@@ -955,6 +967,14 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		throw new NoSuchBeanDefinitionException(requiredType);
 	}
 
+	/**
+	 *
+	 * @param requiredType
+	 * @param args
+	 * @param <T>
+	 * @return
+	 * @throws BeansException
+	 */
 	@SuppressWarnings("unchecked")
 	@Nullable
 	private <T> NamedBeanHolder<T> resolveNamedBean(Class<T> requiredType, @Nullable Object... args) throws BeansException {

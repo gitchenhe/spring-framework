@@ -26,43 +26,23 @@ import org.springframework.core.convert.converter.ConverterRegistry;
 import org.springframework.lang.Nullable;
 
 /**
- * A specialization of {@link GenericConversionService} configured by default
- * with converters appropriate for most environments.
- *
- * <p>Designed for direct instantiation but also exposes the static
- * {@link #addDefaultConverters(ConverterRegistry)} utility method for ad-hoc
- * use against any {@code ConverterRegistry} instance.
- *
- * @author Chris Beams
- * @author Juergen Hoeller
- * @author Stephane Nicoll
- * @since 3.1
+ * 默认类型转换
  */
 public class DefaultConversionService extends GenericConversionService {
 
 	@Nullable
 	private static volatile DefaultConversionService sharedInstance;
 
-
 	/**
-	 * Create a new {@code DefaultConversionService} with the set of
-	 * {@linkplain DefaultConversionService#addDefaultConverters(ConverterRegistry) default converters}.
 	 */
 	public DefaultConversionService() {
+		//设置默认转换器
 		addDefaultConverters(this);
 	}
 
 
 	/**
-	 * Return a shared default {@code ConversionService} instance,
-	 * lazily building it once needed.
-	 * <p><b>NOTE:</b> We highly recommend constructing individual
-	 * {@code ConversionService} instances for customization purposes.
-	 * This accessor is only meant as a fallback for code paths which
-	 * need simple type coercion but cannot access a longer-lived
-	 * {@code ConversionService} instance any other way.
-	 * @return the shared {@code ConversionService} instance (never {@code null})
-	 * @since 4.3.5
+	 * 设置默认转换器服务,未设置返回DefaultConversionService
 	 */
 	public static ConversionService getSharedInstance() {
 		DefaultConversionService cs = sharedInstance;
@@ -79,20 +59,22 @@ public class DefaultConversionService extends GenericConversionService {
 	}
 
 	/**
-	 * Add converters appropriate for most environments.
-	 * @param converterRegistry the registry of converters to add to
-	 * (must also be castable to ConversionService, e.g. being a {@link ConfigurableConversionService})
-	 * @throws ClassCastException if the given ConverterRegistry could not be cast to a ConversionService
+	 * 默认类型转换器集合
 	 */
 	public static void addDefaultConverters(ConverterRegistry converterRegistry) {
+		//标量转换器
 		addScalarConverters(converterRegistry);
+		//集合转换器
 		addCollectionConverters(converterRegistry);
 
+		//byte buffer 转换器
 		converterRegistry.addConverter(new ByteBufferConverter((ConversionService) converterRegistry));
+		//String 转 timeZone
 		converterRegistry.addConverter(new StringToTimeZoneConverter());
 		converterRegistry.addConverter(new ZoneIdToTimeZoneConverter());
 		converterRegistry.addConverter(new ZonedDateTimeToCalendarConverter());
 
+		//对象转换器
 		converterRegistry.addConverter(new ObjectToObjectConverter());
 		converterRegistry.addConverter(new IdToEntityConverter((ConversionService) converterRegistry));
 		converterRegistry.addConverter(new FallbackObjectToStringConverter());
@@ -108,29 +90,46 @@ public class DefaultConversionService extends GenericConversionService {
 	 */
 	public static void addCollectionConverters(ConverterRegistry converterRegistry) {
 		ConversionService conversionService = (ConversionService) converterRegistry;
-
+		//数组转集合
 		converterRegistry.addConverter(new ArrayToCollectionConverter(conversionService));
+		//集合转数组
 		converterRegistry.addConverter(new CollectionToArrayConverter(conversionService));
 
+		//数组转数组
 		converterRegistry.addConverter(new ArrayToArrayConverter(conversionService));
+		//集合转集合
 		converterRegistry.addConverter(new CollectionToCollectionConverter(conversionService));
+		//字典转字典
 		converterRegistry.addConverter(new MapToMapConverter(conversionService));
 
+		//集合转字符串
 		converterRegistry.addConverter(new ArrayToStringConverter(conversionService));
+		//字符串转集合
 		converterRegistry.addConverter(new StringToArrayConverter(conversionService));
 
+		//数组转对象
 		converterRegistry.addConverter(new ArrayToObjectConverter(conversionService));
+		//对象转数组
 		converterRegistry.addConverter(new ObjectToArrayConverter(conversionService));
 
+		//集合转字符串
 		converterRegistry.addConverter(new CollectionToStringConverter(conversionService));
+		//字符串转集合
 		converterRegistry.addConverter(new StringToCollectionConverter(conversionService));
 
+		//集合转对象
 		converterRegistry.addConverter(new CollectionToObjectConverter(conversionService));
+		//对象转几个
 		converterRegistry.addConverter(new ObjectToCollectionConverter(conversionService));
 
+		//流转换
 		converterRegistry.addConverter(new StreamConverter(conversionService));
 	}
 
+	/**
+	 * 标量转换器
+	 * @param converterRegistry
+	 */
 	private static void addScalarConverters(ConverterRegistry converterRegistry) {
 		converterRegistry.addConverterFactory(new NumberToNumberConverterFactory());
 
