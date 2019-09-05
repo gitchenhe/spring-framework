@@ -177,10 +177,10 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 *     	 获取锁(锁可起到等待wait作用,等待创建完成的)
 	 *     	 成功获取到锁,如果实例仍然为空.
 	 *     	 	如果 allowEarlyReference = true,
-	 *     	 		那会调用ObjectFactory.getObject(),创建一个对象,并加到容器中
+	 *     	 		那么会返回一个未完全初始化完成的实例
 	 * </pre>
 	 * @param beanName
-	 * @param allowEarlyReference 如果实例不存在,是否允许使用 ObjectFactory.getObject(),创建实例.
+	 * @param allowEarlyReference 如果=true 并且实例正在创建中,也会返回未完全创建完成的实例(未解决循环引用的实例)
 	 */
 	@Nullable
 	protected Object getSingleton(String beanName, boolean allowEarlyReference) {
@@ -198,7 +198,9 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					ObjectFactory<?> singletonFactory = this.singletonFactories.get(beanName);
 					if (singletonFactory != null) {
 						//通过工厂生产实例
+						//最终调用的类似AbstractBeanFactory的getBean方法
 						singletonObject = singletonFactory.getObject();
+
 						//缓存创建的实例
 						this.earlySingletonObjects.put(beanName, singletonObject);
 						//移除工厂
@@ -232,6 +234,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 				}
 				//将beanName加入到容器中,标识实例正在创建中
 				beforeSingletonCreation(beanName);
+
 				boolean newSingleton = false;
 				boolean recordSuppressedExceptions = (this.suppressedExceptions == null);
 				if (recordSuppressedExceptions) {
@@ -354,7 +357,8 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	}
 
 	/**
-	 * beanName的实例是否正在构建中
+	 * beanName的实例是否正在构建中,还未完全实例化完成
+	 * <p>比如实例A依赖了实例B: 在A实例化时,会先调用A的构造方法,生成实例,然后在实例B,然后将A持有B的引用指向实例B</p>
 	 */
 	public boolean isSingletonCurrentlyInCreation(String beanName) {
 		return this.singletonsCurrentlyInCreation.contains(beanName);

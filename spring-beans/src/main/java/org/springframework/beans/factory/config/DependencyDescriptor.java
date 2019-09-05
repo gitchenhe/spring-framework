@@ -357,23 +357,31 @@ public class DependencyDescriptor extends InjectionPoint implements Serializable
 	}
 
 	/**
+	 * 获取声明的非泛型化的参数类型
 	 * Determine the declared (non-generic) type of the wrapped parameter/field.
 	 * @return the declared type (never {@code null})
 	 */
 	public Class<?> getDependencyType() {
+
 		if (this.field != null) {
+			//如果嵌套层级>1
 			if (this.nestingLevel > 1) {
+				//遍历第二层之后的类型
 				Type type = this.field.getGenericType();
 				for (int i = 2; i <= this.nestingLevel; i++) {
+					//如果类型是参数化的类型,如:List<String>等包含<>泛型的类型. 但是List不属于参数化类型
 					if (type instanceof ParameterizedType) {
 						Type[] args = ((ParameterizedType) type).getActualTypeArguments();
 						type = args[args.length - 1];
 					}
 				}
+
+				//依赖 class
 				if (type instanceof Class) {
 					return (Class<?>) type;
-				}
-				else if (type instanceof ParameterizedType) {
+				} else if (type instanceof ParameterizedType) {
+					//依赖的是一个参数化类型
+					//获取参数化类型的类型,比如:"java.util.Map"
 					Type arg = ((ParameterizedType) type).getRawType();
 					if (arg instanceof Class) {
 						return (Class<?>) arg;

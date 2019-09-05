@@ -31,6 +31,7 @@ import java.util.Set;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.BeanNameAware;
+import org.springframework.beans.factory.FactoryBean;
 import org.springframework.util.ObjectUtils;
 
 /**

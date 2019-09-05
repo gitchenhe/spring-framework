@@ -108,9 +108,10 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 						//如果需要发布bean创建后流程
 						if (shouldPostProcess) {
 							if (isSingletonCurrentlyInCreation(beanName)) {
-								// 走到这里,说明有其他线程,走到了 beforeSingletonCreation(beanName);
+								// 实例正在创建中,还未完全创建成功,比如:正在实例化循环引用的实例
 								return object;
 							}
+							//如果实例不再创建中,就把实例加入到创建中队列
 							beforeSingletonCreation(beanName);
 							try {
 								//发布bean实例创建事件
@@ -121,9 +122,11 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 										"Post-processing of FactoryBean's singleton object failed", ex);
 							}
 							finally {
+								//从创建中集合移除实例
 								afterSingletonCreation(beanName);
 							}
 						}
+						//缓存实例
 						if (containsSingleton(beanName)) {
 							this.factoryBeanObjectCache.put(beanName, object);
 						}
@@ -168,6 +171,7 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 				}
 			}
 			else {
+				//创建实例
 				object = factory.getObject();
 			}
 		}
@@ -178,7 +182,7 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 			throw new BeanCreationException(beanName, "FactoryBean threw exception on object creation", ex);
 		}
 
-		// Do not accept a null value for a FactoryBean that's not fully
+		// 实例未创建成功,返回NullBean
 		// initialized yet: Many FactoryBeans just return null then.
 		if (object == null) {
 			if (isSingletonCurrentlyInCreation(beanName)) {

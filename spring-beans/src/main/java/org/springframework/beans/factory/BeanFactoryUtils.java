@@ -53,7 +53,7 @@ public abstract class BeanFactoryUtils {
 
 
 	/**
-	 * 返回给定名称是否工厂废弃,name是以&开头
+	 * 返回给定名称是否工厂引用,name是以&开头
 	 * @param name the name of the bean
 	 * @return whether the given name is a factory dereference
 	 * @see BeanFactory#FACTORY_BEAN_PREFIX

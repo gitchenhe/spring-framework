@@ -34,14 +34,20 @@ public class BeanDefinitionTests {
 		bd.setAbstract(true);
 		bd.setLazyInit(true);
 		bd.setScope("request");
+
 		RootBeanDefinition otherBd = new RootBeanDefinition(TestBean.class);
+		//两个bean define 不同
 		assertTrue(!bd.equals(otherBd));
 		assertTrue(!otherBd.equals(bd));
+
+		//属性设置为和bd,两个bean define 就相同了
 		otherBd.setAbstract(true);
 		otherBd.setLazyInit(true);
 		otherBd.setScope("request");
+
 		assertTrue(bd.equals(otherBd));
 		assertTrue(otherBd.equals(bd));
+
 		assertTrue(bd.hashCode() == otherBd.hashCode());
 	}
 

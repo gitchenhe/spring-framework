@@ -700,33 +700,41 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		return (this.configurationFrozen || super.isBeanEligibleForMetadataCaching(beanName));
 	}
 
+	/**
+	 * 预先实例化单例
+	 * @throws BeansException
+	 */
 	@Override
 	public void preInstantiateSingletons() throws BeansException {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Pre-instantiating singletons in " + this);
 		}
 
-		// Iterate over a copy to allow for init methods which in turn register new bean definitions.
-		// While this may not be part of the regular factory bootstrap, it does otherwise work fine.
+		// 遍历一个副本,以便init方法反过来注册新的bean定义。
+		// 虽然这可能不是正规工厂的一部分引导,否则正常工作。
 		List<String> beanNames = new ArrayList<>(this.beanDefinitionNames);
 
-		// Trigger initialization of all non-lazy singleton beans...
+		// 初始化所有非延迟加载的bean
 		for (String beanName : beanNames) {
 			RootBeanDefinition bd = getMergedLocalBeanDefinition(beanName);
+			//初始化非抽象的,单例的,非延迟加载的bena
 			if (!bd.isAbstract() && bd.isSingleton() && !bd.isLazyInit()) {
+				//如果bean是FactoryBean
 				if (isFactoryBean(beanName)) {
+					//获取Bean实例,而非FactoryBean.getObject()实例
 					Object bean = getBean(FACTORY_BEAN_PREFIX + beanName);
+
+
 					if (bean instanceof FactoryBean) {
 						final FactoryBean<?> factory = (FactoryBean<?>) bean;
+
 						boolean isEagerInit;
 						if (System.getSecurityManager() != null && factory instanceof SmartFactoryBean) {
 							isEagerInit = AccessController.doPrivileged((PrivilegedAction<Boolean>)
 											((SmartFactoryBean<?>) factory)::isEagerInit,
 									getAccessControlContext());
-						}
-						else {
-							isEagerInit = (factory instanceof SmartFactoryBean &&
-									((SmartFactoryBean<?>) factory).isEagerInit());
+						} else {
+							isEagerInit = (factory instanceof SmartFactoryBean && ((SmartFactoryBean<?>) factory).isEagerInit());
 						}
 						if (isEagerInit) {
 							getBean(beanName);
@@ -1056,20 +1064,30 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			@Nullable Set<String> autowiredBeanNames, @Nullable TypeConverter typeConverter) throws BeansException {
 
 		InjectionPoint previousInjectionPoint = ConstructorResolver.setCurrentInjectionPoint(descriptor);
+
 		try {
+			//获取当前实例,可能是一个尚未初始化完成的实例(正在解决循环依赖)
 			Object shortcut = descriptor.resolveShortcut(this);
 			if (shortcut != null) {
 				return shortcut;
 			}
 
+			//获取依赖类型
 			Class<?> type = descriptor.getDependencyType();
+			//获取推荐注入实例
 			Object value = getAutowireCandidateResolver().getSuggestedValue(descriptor);
+
+
 			if (value != null) {
+				//如果是字符串,处理字符串里的表达式,获取实际值
 				if (value instanceof String) {
 					String strVal = resolveEmbeddedValue((String) value);
+					//合并BeanDefine
 					BeanDefinition bd = (beanName != null && containsBean(beanName) ? getMergedBeanDefinition(beanName) : null);
+					//将字符串应用于注入者实例
 					value = evaluateBeanDefinitionString(strVal, bd);
 				}
+
 				TypeConverter converter = (typeConverter != null ? typeConverter : getTypeConverter());
 				return (descriptor.getField() != null ?
 						converter.convertIfNecessary(value, type, descriptor.getField()) :
@@ -1521,8 +1539,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	/**
 	 * Create an {@link Optional} wrapper for the specified dependency.
 	 */
-	private Optional<?> createOptionalDependency(
-			DependencyDescriptor descriptor, @Nullable String beanName, final Object... args) {
+	private Optional<?> createOptionalDependency( DependencyDescriptor descriptor, @Nullable String beanName, final Object... args) {
 
 		DependencyDescriptor descriptorToUse = new NestedDependencyDescriptor(descriptor) {
 			@Override
@@ -1531,10 +1548,12 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			}
 			@Override
 			public Object resolveCandidate(String beanName, Class<?> requiredType, BeanFactory beanFactory) {
-				return (!ObjectUtils.isEmpty(args) ? beanFactory.getBean(beanName, args) :
-						super.resolveCandidate(beanName, requiredType, beanFactory));
+				//不参数为空,调用BeanFactory.getBean(beanName,args)创建实例
+				//参数为空, 调用BeanFactory.getBean(beanName)创建实例
+				return (!ObjectUtils.isEmpty(args) ? beanFactory.getBean(beanName, args) : super.resolveCandidate(beanName, requiredType, beanFactory));
 			}
 		};
+		//解决依赖关系
 		Object result = doResolveDependency(descriptorToUse, beanName, null, null);
 		return (result instanceof Optional ? (Optional<?>) result : Optional.ofNullable(result));
 	}
@@ -1645,6 +1664,11 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			this.beanName = beanName;
 		}
 
+		/**
+		 * 创建实例
+		 * @return
+		 * @throws BeansException
+		 */
 		@Override
 		public Object getObject() throws BeansException {
 			if (this.optional) {

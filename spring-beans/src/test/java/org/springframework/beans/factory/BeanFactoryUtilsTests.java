@@ -79,10 +79,18 @@ public class BeanFactoryUtilsTests {
 
 	@Test
 	public void testHierarchicalCountBeansWithNonHierarchicalFactory() {
-		StaticListableBeanFactory lbf = new StaticListableBeanFactory();
-		lbf.addBean("t1", new TestBean());
-		lbf.addBean("t2", new TestBean());
-		assertTrue(BeanFactoryUtils.countBeansIncludingAncestors(lbf) == 2);
+		BeanFactory beanFactory = new StaticListableBeanFactory();
+		((StaticListableBeanFactory) beanFactory).addBean("t1", new TestBean());
+		((StaticListableBeanFactory) beanFactory).addBean("t2", new TestBean());
+
+		//获取的实际的bean
+		Object bean1 = beanFactory.getBean("&t1");
+
+		//获取的是factory bean 创建的对象
+		Object bean2 = beanFactory.getBean("t1");
+
+		System.out.println(bean1 == bean2);
+
 	}
 
 	/**
