@@ -171,8 +171,7 @@ public abstract class AbstractFactoryBean<T>
 					getClass().getName() + " does not support circular references");
 		}
 		if (this.earlySingletonInstance == null) {
-			this.earlySingletonInstance = (T) Proxy.newProxyInstance(
-					this.beanClassLoader, ifcs, new EarlySingletonInvocationHandler());
+			this.earlySingletonInstance = (T) Proxy.newProxyInstance(this.beanClassLoader, ifcs, new EarlySingletonInvocationHandler());
 		}
 		return this.earlySingletonInstance;
 	}

@@ -41,7 +41,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
- * Default object instantiation strategy for use in BeanFactories.
+ * 默认创建Bean实例的策略
  *
  * <p>Uses CGLIB to generate subclasses dynamically if methods need to be
  * overridden by the container to implement <em>Method Injection</em>.
@@ -114,14 +114,18 @@ public class CglibSubclassingInstantiationStrategy extends SimpleInstantiationSt
 		 * @return new instance of the dynamically generated subclass
 		 */
 		public Object instantiate(@Nullable Constructor<?> ctor, @Nullable Object... args) {
+			//创建增强Class
 			Class<?> subclass = createEnhancedSubclass(this.beanDefinition);
 			Object instance;
+			//没有构造方法,直接创建实例
 			if (ctor == null) {
 				instance = BeanUtils.instantiateClass(subclass);
 			}
 			else {
 				try {
+					//获取构造方法
 					Constructor<?> enhancedSubclassConstructor = subclass.getConstructor(ctor.getParameterTypes());
+					//创建实例
 					instance = enhancedSubclassConstructor.newInstance(args);
 				}
 				catch (Exception ex) {
@@ -143,13 +147,19 @@ public class CglibSubclassingInstantiationStrategy extends SimpleInstantiationSt
 		 * definition, using CGLIB.
 		 */
 		private Class<?> createEnhancedSubclass(RootBeanDefinition beanDefinition) {
+			//创建Enhance对象
 			Enhancer enhancer = new Enhancer();
+			//设置当前bean的class类型
 			enhancer.setSuperclass(beanDefinition.getBeanClass());
+			//设置spring的命名策略
 			enhancer.setNamingPolicy(SpringNamingPolicy.INSTANCE);
+			//设置生成策略
 			if (this.owner instanceof ConfigurableBeanFactory) {
 				ClassLoader cl = ((ConfigurableBeanFactory) this.owner).getBeanClassLoader();
 				enhancer.setStrategy(new ClassLoaderAwareGeneratorStrategy(cl));
 			}
+			// 过滤,自定义逻辑来指定调用的callback下标
+			//方法执行前后后调用到MethodOverrideCallbackFilter里的invoke方法
 			enhancer.setCallbackFilter(new MethodOverrideCallbackFilter(beanDefinition));
 			enhancer.setCallbackTypes(CALLBACK_TYPES);
 			return enhancer.createClass();

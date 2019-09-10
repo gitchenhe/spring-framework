@@ -20,11 +20,7 @@ import org.springframework.beans.factory.NamedBean;
 import org.springframework.util.Assert;
 
 /**
- * A simple holder for a given bean name plus bean instance.
- *
- * @author Juergen Hoeller
- * @since 4.3.3
- * @see AutowireCapableBeanFactory#resolveNamedBean(Class)
+ * 持有bean name  以及 它对应的实例.
  */
 public class NamedBeanHolder<T> implements NamedBean {
 

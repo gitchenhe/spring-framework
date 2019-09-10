@@ -369,8 +369,8 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		if (!isConfigurationFrozen() || type == null || !allowEagerInit) {
 			return doGetBeanNamesForType(ResolvableType.forRawClass(type), includeNonSingletons, allowEagerInit);
 		}
-		Map<Class<?>, String[]> cache =
-				(includeNonSingletons ? this.allBeanNamesByType : this.singletonBeanNamesByType);
+
+		Map<Class<?>, String[]> cache = (includeNonSingletons ? this.allBeanNamesByType : this.singletonBeanNamesByType);
 		String[] resolvedBeanNames = cache.get(type);
 		if (resolvedBeanNames != null) {
 			return resolvedBeanNames;
@@ -382,6 +382,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		return resolvedBeanNames;
 	}
 
+	//获取类型的的 beanName
 	private String[] doGetBeanNamesForType(ResolvableType type, boolean includeNonSingletons, boolean allowEagerInit) {
 		List<String> result = new ArrayList<>();
 
@@ -390,6 +391,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			// 只考虑bean name 是非别名
 			if (!isAlias(beanName)) {
 				try {
+					//获取bean define
 					RootBeanDefinition mbd = getMergedLocalBeanDefinition(beanName);
 					// Only check bean definition if it is complete.
 					//rootBeanDefine是非抽象的
@@ -1039,6 +1041,8 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			@Nullable Set<String> autowiredBeanNames, @Nullable TypeConverter typeConverter) throws BeansException {
 
 		descriptor.initParameterNameDiscovery(getParameterNameDiscoverer());
+
+		//对Java8中Optional类的处理
 		if (Optional.class == descriptor.getDependencyType()) {
 			return createOptionalDependency(descriptor, requestingBeanName);
 		}

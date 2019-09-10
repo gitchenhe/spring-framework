@@ -119,8 +119,7 @@ public abstract class BeanUtils {
 			throw new BeanInstantiationException(clazz, "Specified class is an interface");
 		}
 		try {
-			Constructor<T> ctor = (KotlinDetector.isKotlinType(clazz) ?
-					KotlinDelegate.getPrimaryConstructor(clazz) : clazz.getDeclaredConstructor());
+			Constructor<T> ctor = (KotlinDetector.isKotlinType(clazz) ? KotlinDelegate.getPrimaryConstructor(clazz) : clazz.getDeclaredConstructor());
 			return instantiateClass(ctor);
 		}
 		catch (NoSuchMethodException ex) {

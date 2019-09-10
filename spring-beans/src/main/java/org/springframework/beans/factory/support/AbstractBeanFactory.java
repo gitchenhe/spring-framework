@@ -239,9 +239,9 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	protected <T> T doGetBean(final String name, @Nullable final Class<T> requiredType,
 			@Nullable final Object[] args, boolean typeCheckOnly) throws BeansException {
 
-		//
-		final String beanName = transformedBeanName(name);
 
+		final String beanName = transformedBeanName(name);
+		logger.debug(String.format("获取[%s]的真实beanName:[%s]",name,beanName));
 		Object bean;
 
 		// 检查单例缓存,(单例不存在,会试图创建新实例,并返回)
@@ -268,7 +268,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				throw new BeanCurrentlyInCreationException(beanName);
 			}
 
-			// 检查BeanDefine是否存在于BeanFactory中
+			// 获取父BeanFactory
 			BeanFactory parentBeanFactory = getParentBeanFactory();
 
 			if (parentBeanFactory != null && !containsBeanDefinition(beanName)) {
@@ -299,12 +299,15 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				String[] dependsOn = mbd.getDependsOn();
 				if (dependsOn != null) {
 					for (String dep : dependsOn) {
+						//检查是否有循环依赖
 						if (isDependent(beanName, dep)) {
 							throw new BeanCreationException(mbd.getResourceDescription(), beanName,
 									"Circular depends-on relationship between '" + beanName + "' and '" + dep + "'");
 						}
+						//添加被依赖关系
 						registerDependentBean(dep, beanName);
 						try {
+							//先创建被依赖的Bean
 							getBean(dep);
 						}
 						catch (NoSuchBeanDefinitionException ex) {
@@ -314,7 +317,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					}
 				}
 
-				// Create bean instance.
+				// 创建实例
 				if (mbd.isSingleton()) {
 					sharedInstance = getSingleton(beanName, () -> {
 						try {
@@ -1370,6 +1373,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			throws CannotLoadBeanClassException {
 
 		try {
+			//是否已经存在,class 字符串已经转换成了Class对象
 			if (mbd.hasBeanClass()) {
 				return mbd.getBeanClass();
 			}
@@ -1393,6 +1397,13 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		}
 	}
 
+	/**
+	 * bean 的class 属性值转为 Class<?>
+	 * @param mbd
+	 * @param typesToMatch
+	 * @return
+	 * @throws ClassNotFoundException
+	 */
 	@Nullable
 	private Class<?> doResolveBeanClass(RootBeanDefinition mbd, Class<?>... typesToMatch)
 			throws ClassNotFoundException {

@@ -1735,7 +1735,7 @@ public class DefaultListableBeanFactoryTests {
 	public void testGetBeanNamesForTypeAfterFactoryBeanCreation() {
 		DefaultListableBeanFactory lbf = new DefaultListableBeanFactory();
 		lbf.registerBeanDefinition("factoryBean", new RootBeanDefinition(FactoryBeanThatShouldntBeCalled.class));
-		lbf.getBean("&factoryBean");
+		Object object = lbf.getBean("&factoryBean");
 
 		String[] beanNames = lbf.getBeanNamesForType(Runnable.class, false, false);
 		assertEquals(1, beanNames.length);
@@ -2998,6 +2998,7 @@ public class DefaultListableBeanFactoryTests {
 
 		@Override
 		public T getObject() {
+			System.out.println("FactoryBean 获取实例");
 			throw new IllegalStateException();
 		}
 
