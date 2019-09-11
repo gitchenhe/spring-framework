@@ -29,10 +29,14 @@ import java.util.Map;
 import org.junit.Test;
 
 import org.springframework.aop.support.AopUtils;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.CannotLoadBeanClassException;
+import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
+import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.MessageSource;
@@ -75,9 +79,15 @@ public class ClassPathXmlApplicationContextTests {
 
 	@Test
 	public void testSingleConfigLocation() {
-		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(FQ_SIMPLE_CONTEXT);
+		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext();
+		ctx.addBeanFactoryPostProcessor(new CustomerBeanFactoryPostProcessor());
+		ctx.setConfigLocation(FQ_SIMPLE_CONTEXT);
+		ctx.refresh();
 
+		System.out.println(ctx.getBeanDefinitionNames()[0]);
+		System.out.println(ctx.getBeanDefinitionNames()[1]);
 		assertTrue(ctx.containsBean("someMessageSource"));
+		assertTrue(ctx.getBean("yourMessageSource") == ctx.getBean("someMessageSource"));
 		ctx.close();
 	}
 
@@ -401,6 +411,29 @@ public class ClassPathXmlApplicationContextTests {
 		assertTrue(ctx.containsBean("logicOne"));
 		assertTrue(ctx.containsBean("logicTwo"));
 		ctx.close();
+	}
+
+	public static class CustomerBeanFactoryPostProcessor implements BeanFactoryPostProcessor{
+
+		@Override
+		public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+			System.out.println("=====================");
+			beanFactory.addBeanPostProcessor(new CustomerBeanPostProcessor());
+		}
+	}
+
+	public static class CustomerBeanPostProcessor implements BeanPostProcessor {
+		@Override
+		public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+			System.out.println("实例化前:"+beanName);
+			return bean;
+		}
+
+		@Override
+		public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+			System.out.println("实例化后:"+beanName);
+			return bean;
+		}
 	}
 
 }

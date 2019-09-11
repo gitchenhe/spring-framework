@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.tests.context.SimpleMapScope;
@@ -52,9 +53,10 @@ public class ScopedProxyTests {
 
 	@Test  // SPR-2108
 	public void testProxyAssignable() throws Exception {
-		DefaultListableBeanFactory bf = new DefaultListableBeanFactory();
-		new XmlBeanDefinitionReader(bf).loadBeanDefinitions(MAP_CONTEXT);
-		Object baseMap = bf.getBean("singletonMap");
+		//DefaultListableBeanFactory bf = new DefaultListableBeanFactory();
+		//new XmlBeanDefinitionReader(bf).loadBeanDefinitions(MAP_CONTEXT);
+		ClassPathXmlApplicationContext ctx= new ClassPathXmlApplicationContext("classpath:org/springframework/aop/scope/ScopedProxyTests-map.xml");
+		Object baseMap = ctx.getBean("singletonMap");
 		assertTrue(baseMap instanceof Map);
 	}
 

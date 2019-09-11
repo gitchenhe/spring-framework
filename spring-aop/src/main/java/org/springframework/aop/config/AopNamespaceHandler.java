@@ -16,9 +16,12 @@
 
 package org.springframework.aop.config;
 
+import com.hazelcast.logging.LoggerFactory;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
+
+import java.util.logging.Logger;
 
 /**
  * {@code NamespaceHandler} for the {@code aop} namespace.
@@ -53,7 +56,6 @@ import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
  * @since 2.0
  */
 public class AopNamespaceHandler extends NamespaceHandlerSupport {
-
 	/**
 	 * Register the {@link BeanDefinitionParser BeanDefinitionParsers} for the
 	 * '{@code config}', '{@code spring-configured}', '{@code aspectj-autoproxy}'
@@ -62,6 +64,7 @@ public class AopNamespaceHandler extends NamespaceHandlerSupport {
 	@Override
 	public void init() {
 		// In 2.0 XSD as well as in 2.1 XSD.
+		System.out.println("注册AOP BeanDefine 解析器");
 		registerBeanDefinitionParser("config", new ConfigBeanDefinitionParser());
 		registerBeanDefinitionParser("aspectj-autoproxy", new AspectJAutoProxyBeanDefinitionParser());
 		registerBeanDefinitionDecorator("scoped-proxy", new ScopedProxyBeanDefinitionDecorator());
