@@ -16,6 +16,7 @@
 
 package org.springframework.aop.framework;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.List;
@@ -23,6 +24,10 @@ import java.util.List;
 import org.junit.Test;
 
 import org.springframework.aop.SpringProxy;
+import org.springframework.cglib.proxy.Callback;
+import org.springframework.cglib.proxy.Enhancer;
+import org.springframework.cglib.proxy.MethodInterceptor;
+import org.springframework.cglib.proxy.MethodProxy;
 import org.springframework.tests.sample.beans.ITestBean;
 import org.springframework.tests.sample.beans.TestBean;
 
@@ -128,6 +133,40 @@ public class AopProxyUtilsTests {
 		Object proxy = Proxy.newProxyInstance(getClass().getClassLoader(), new Class[0],
 				(proxy1, method, args) -> null);
 		AopProxyUtils.proxiedUserInterfaces(proxy);
+	}
+
+	@Test
+	public void cgLibTest(){
+		Enhancer enhancer = new Enhancer();
+		enhancer.setClassLoader(getClass().getClassLoader());
+		enhancer.setSuperclass(TestClass.class);
+		enhancer.setCallback(new DefaultCallBack(new TestClass()));
+
+		TestClass test = (TestClass) enhancer.create();
+		test.say();
+	}
+
+
+	static class TestClass{
+		public void say(){
+			System.out.println("hello");
+		}
+	}
+
+	static class DefaultCallBack implements MethodInterceptor {
+		{
+			System.out.println("初始化");
+		}
+		Object object;
+		public DefaultCallBack(Object object){
+		    this.object = object;
+		}
+
+		@Override
+		public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
+			System.out.println("开始调用了");
+			return method.invoke(object,objects);
+		}
 	}
 
 }

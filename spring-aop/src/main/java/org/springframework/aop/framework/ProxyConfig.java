@@ -21,41 +21,41 @@ import java.io.Serializable;
 import org.springframework.util.Assert;
 
 /**
- * Convenience superclass for configuration used in creating proxies,
- * to ensure that all proxy creators have consistent properties.
- *
- * @author Rod Johnson
- * @author Juergen Hoeller
- * @see AdvisedSupport
+ * 代理相关的配置
  */
 public class ProxyConfig implements Serializable {
 
 	/** use serialVersionUID from Spring 1.2 for interoperability */
 	private static final long serialVersionUID = -8409359707199703185L;
 
-
+	/**
+	 * 大爱丽目标类
+	 */
 	private boolean proxyTargetClass = false;
 
+	/**
+	 * 优化?
+	 */
 	private boolean optimize = false;
 
+	/**
+	 * 不透明
+	 */
 	boolean opaque = false;
 
+	/**
+	 * 暴露代理
+	 */
 	boolean exposeProxy = false;
 
+	/**
+	 * 冻结
+	 */
 	private boolean frozen = false;
 
 
 	/**
-	 * Set whether to proxy the target class directly, instead of just proxying
-	 * specific interfaces. Default is "false".
-	 * <p>Set this to "true" to force proxying for the TargetSource's exposed
-	 * target class. If that target class is an interface, a JDK proxy will be
-	 * created for the given interface. If that target class is any other class,
-	 * a CGLIB proxy will be created for the given class.
-	 * <p>Note: Depending on the configuration of the concrete proxy factory,
-	 * the proxy-target-class behavior will also be applied if no interfaces
-	 * have been specified (and no interface autodetection is activated).
-	 * @see org.springframework.aop.TargetSource#getTargetClass()
+	 * 设置是否代理目标类,而不是特定接口
 	 */
 	public void setProxyTargetClass(boolean proxyTargetClass) {
 		this.proxyTargetClass = proxyTargetClass;

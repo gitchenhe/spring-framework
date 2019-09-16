@@ -45,6 +45,7 @@ import org.springframework.util.ObjectUtils;
 public abstract class AopProxyUtils {
 
 	/**
+	 * 获得大爱丽
 	 * Obtain the singleton target object behind the given proxy, if any.
 	 * @param candidate the (potential) proxy to check
 	 * @return the singleton target object managed in a {@link SingletonTargetSource},

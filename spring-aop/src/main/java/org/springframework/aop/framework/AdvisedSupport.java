@@ -43,20 +43,7 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
 
 /**
- * Base class for AOP proxy configuration managers.
- * These are not themselves AOP proxies, but subclasses of this class are
- * normally factories from which AOP proxy instances are obtained directly.
- *
- * <p>This class frees subclasses of the housekeeping of Advices
- * and Advisors, but doesn't actually implement proxy creation
- * methods, which are provided by subclasses.
- *
- * <p>This class is serializable; subclasses need not be.
- * This class is used to hold snapshots of proxies.
- *
- * @author Rod Johnson
- * @author Juergen Hoeller
- * @see org.springframework.aop.framework.AopProxy
+ * 基础类 AOP 代理配置
  */
 public class AdvisedSupport extends ProxyConfig implements Advised {
 
@@ -65,8 +52,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 
 
 	/**
-	 * Canonical TargetSource when there's no target, and behavior is
-	 * supplied by the advisors.
+	 * 代理的目标class
 	 */
 	public static final TargetSource EMPTY_TARGET_SOURCE = EmptyTargetSource.INSTANCE;
 
@@ -80,7 +66,11 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 	/** The AdvisorChainFactory to use */
 	AdvisorChainFactory advisorChainFactory = new DefaultAdvisorChainFactory();
 
-	/** Cache with Method as key and advisor chain List as value */
+	/**
+	 * key = 方法名 <br/>
+	 * value = advisor <br>
+	 * Cache with Method as key and advisor chain List as value
+	 * */
 	private transient Map<MethodCacheKey, List<Object>> methodCache;
 
 	/**
@@ -120,6 +110,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 
 
 	/**
+	 * 设置target为代理的对象
 	 * Set the given object as target.
 	 * Will create a SingletonTargetSource for the object.
 	 * @see #setTargetSource

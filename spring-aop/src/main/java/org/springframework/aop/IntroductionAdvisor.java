@@ -17,21 +17,23 @@
 package org.springframework.aop;
 
 /**
- * Superinterface for advisors that perform one or more AOP <b>introductions</b>.
+ * IntroductionAdvisor 只能用于类级别的拦截 <br>
  *
- * <p>This interface cannot be implemented directly; subinterfaces must
- * provide the advice type implementing the introduction.
+ * 引介切面<br>
  *
- * <p>Introduction is the implementation of additional interfaces
- * (not implemented by a target) via AOP advice.
+ * Spring 有5种增强:前置(BeforeAdvice),后置(AfterAdvice),异常增强(ThrowsAdvice),
+ * 环绕增强(RoundAdvice),引入增强(IntroductionAdvice)<br>
  *
- * @author Rod Johnson
- * @since 04.04.2003
- * @see IntroductionInterceptor
+ * 引入增强（Introduction Advice）的概念: 一个类,没有实现A接口,在不修改代码的基础上,使其具备A接口的功能<br>
+ *
+ * 为了更好的了解IntroductionAdvisor，我先有必要讲解下IntroductionInfo和IntroductionInterceptor；<br>
+ *
  */
 public interface IntroductionAdvisor extends Advisor, IntroductionInfo {
 
 	/**
+	 *
+	 * 它只有class filter,因为它只能作用在类层面上
 	 * Return the filter determining which target classes this introduction
 	 * should apply to.
 	 * <p>This represents the class part of a pointcut. Note that method
@@ -40,7 +42,9 @@ public interface IntroductionAdvisor extends Advisor, IntroductionInfo {
 	 */
 	ClassFilter getClassFilter();
 
+
 	/**
+	 * 判断这些接口,是否真的能够增强,
 	 * Can the advised interfaces be implemented by the introduction advice?
 	 * Invoked before adding an IntroductionAdvisor.
 	 * @throws IllegalArgumentException if the advised interfaces can't be

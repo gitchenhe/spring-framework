@@ -23,47 +23,32 @@ import org.springframework.aop.TargetClassAware;
 import org.springframework.aop.TargetSource;
 
 /**
- * Interface to be implemented by classes that hold the configuration
- * of a factory of AOP proxies. This configuration includes the
- * Interceptors and other advice, Advisors, and the proxied interfaces.
- *
- * <p>Any AOP proxy obtained from Spring can be cast to this interface to
- * allow manipulation of its AOP advice.
- *
- * @author Rod Johnson
- * @author Juergen Hoeller
- * @since 13.03.2003
- * @see org.springframework.aop.framework.AdvisedSupport
+ * 持有AOP代理的配置信息
  */
 public interface Advised extends TargetClassAware {
 
 	/**
-	 * Return whether the Advised configuration is frozen,
-	 * in which case no advice changes can be made.
+	 * 是否冻结
 	 */
 	boolean isFrozen();
 
 	/**
-	 * Are we proxying the full target class instead of specified interfaces?
+	 * 代理的是class而不是接口
 	 */
 	boolean isProxyTargetClass();
 
 	/**
-	 * Return the interfaces proxied by the AOP proxy.
-	 * <p>Will not include the target class, which may also be proxied.
+	 * 代理的接口
 	 */
 	Class<?>[] getProxiedInterfaces();
 
 	/**
-	 * Determine whether the given interface is proxied.
-	 * @param intf the interface to check
+	 * 是否代理了给定的接口
 	 */
 	boolean isInterfaceProxied(Class<?> intf);
 
 	/**
-	 * Change the {@code TargetSource} used by this {@code Advised} object.
-	 * <p>Only works if the configuration isn't {@linkplain #isFrozen frozen}.
-	 * @param targetSource new TargetSource to use
+	 * 改变代理的class
 	 */
 	void setTargetSource(TargetSource targetSource);
 
@@ -73,22 +58,12 @@ public interface Advised extends TargetClassAware {
 	TargetSource getTargetSource();
 
 	/**
-	 * Set whether the proxy should be exposed by the AOP framework as a
-	 * {@link ThreadLocal} for retrieval via the {@link AopContext} class.
-	 * <p>It can be necessary to expose the proxy if an advised object needs
-	 * to invoke a method on itself with advice applied. Otherwise, if an
-	 * advised object invokes a method on {@code this}, no advice will be applied.
-	 * <p>Default is {@code false}, for optimal performance.
+	 * 设置是否公开暴露代理的对象,在threadLocal上下文中访问
 	 */
 	void setExposeProxy(boolean exposeProxy);
 
 	/**
-	 * Return whether the factory should expose the proxy as a {@link ThreadLocal}.
-	 * <p>It can be necessary to expose the proxy if an advised object needs
-	 * to invoke a method on itself with advice applied. Otherwise, if an
-	 * advised object invokes a method on {@code this}, no advice will be applied.
-	 * <p>Getting the proxy is analogous to an EJB calling {@code getEJBObject()}.
-	 * @see AopContext
+	 * 是否暴露代理对象
 	 */
 	boolean isExposeProxy();
 
@@ -109,8 +84,7 @@ public interface Advised extends TargetClassAware {
 	boolean isPreFiltered();
 
 	/**
-	 * Return the advisors applying to this proxy.
-	 * @return a list of Advisors applying to this proxy (never {@code null})
+	 * 返回所有的advisor
 	 */
 	Advisor[] getAdvisors();
 

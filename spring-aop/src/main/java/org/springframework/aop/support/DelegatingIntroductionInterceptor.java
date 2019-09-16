@@ -54,8 +54,7 @@ public class DelegatingIntroductionInterceptor extends IntroductionInfoSupport
 		implements IntroductionInterceptor {
 
 	/**
-	 * Object that actually implements the interfaces.
-	 * May be "this" if a subclass implements the introduced interfaces.
+	 * 需要被代理的对象,因为这个类需要子类继承使用,所以一般是this
 	 */
 	@Nullable
 	private Object delegate;
@@ -90,6 +89,7 @@ public class DelegatingIntroductionInterceptor extends IntroductionInfoSupport
 		this.delegate = delegate;
 		implementInterfacesOnObject(delegate);
 
+		//移除这些内部标记的接口们
 		// We don't want to expose the control interface
 		suppressInterface(IntroductionInterceptor.class);
 		suppressInterface(DynamicIntroductionAdvice.class);
@@ -97,6 +97,7 @@ public class DelegatingIntroductionInterceptor extends IntroductionInfoSupport
 
 
 	/**
+	 * 如果你要自定义一些行为:比如环绕通知之类的,子类需要复写次方法
 	 * Subclasses may need to override this if they want to perform custom
 	 * behaviour in around advice. However, subclasses should invoke this
 	 * method, which handles introduced interfaces and forwarding to the target.
@@ -104,14 +105,14 @@ public class DelegatingIntroductionInterceptor extends IntroductionInfoSupport
 	@Override
 	@Nullable
 	public Object invoke(MethodInvocation mi) throws Throwable {
+		//是否是引介增强
 		if (isMethodOnIntroducedInterface(mi)) {
 			// Using the following method rather than direct reflection, we
 			// get correct handling of InvocationTargetException
 			// if the introduced method throws an exception.
 			Object retVal = AopUtils.invokeJoinpointUsingReflection(this.delegate, mi.getMethod(), mi.getArguments());
 
-			// Massage return value if possible: if the delegate returned itself,
-			// we really want to return the proxy.
+			//如果返回值是delegate本身,那么就把本身返回出去
 			if (retVal == this.delegate && mi instanceof ProxyMethodInvocation) {
 				Object proxy = ((ProxyMethodInvocation) mi).getProxy();
 				if (mi.getMethod().getReturnType().isInstance(proxy)) {

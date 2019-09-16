@@ -36,33 +36,20 @@ import org.aopalliance.aop.Advice;
 public interface Advisor {
 
 	/**
-	 * Common placeholder for an empty {@code Advice} to be returned from
-	 * {@link #getAdvice()} if no proper advice has been configured (yet).
-	 * @since 5.0
+	 * @since 5.0 Spring5以后才有的  空通知  一般当作默认值
 	 */
 	Advice EMPTY_ADVICE = new Advice() {};
 
 
 	/**
-	 * Return the advice part of this aspect. An advice may be an
-	 * interceptor, a before advice, a throws advice, etc.
-	 * @return the advice that should apply if the pointcut matches
-	 * @see org.aopalliance.intercept.MethodInterceptor
-	 * @see BeforeAdvice
-	 * @see ThrowsAdvice
-	 * @see AfterReturningAdvice
+	 * 该Advisor 持有的通知器
 	 */
 	Advice getAdvice();
 
 	/**
-	 * Return whether this advice is associated with a particular instance
-	 * (for example, creating a mixin) or shared with all instances of
-	 * the advised class obtained from the same Spring bean factory.
-	 * <p><b>Note that this method is not currently used by the framework.</b>
-	 * Typical Advisor implementations always return {@code true}.
-	 * Use singleton/prototype bean definitions or appropriate programmatic
-	 * proxy creation to ensure that Advisors have the correct lifecycle model.
-	 * @return whether this advice is associated with a particular target instance
+	 * 这个有点意思：Spring所有的实现类都是return true(官方说暂时还没有应用到)
+	 * 注意：生成的Advisor是单例还是多例不由isPerInstance()的返回结果决定，而由自己在定义bean的时候控制
+	 * 理解：和类共享（per-class）或基于实例（per-instance）相关  类共享：类比静态变量   实例共享：类比实例变量
 	 */
 	boolean isPerInstance();
 
