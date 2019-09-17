@@ -41,6 +41,7 @@ public class AopProxyUtilsTests {
 
 	@Test
 	public void testCompleteProxiedInterfacesWorksWithNull() {
+		System.out.println("AdvisedSupport 默认会添加两个接口:Advised,SpringProxy");
 		AdvisedSupport as = new AdvisedSupport();
 		Class<?>[] completedInterfaces = AopProxyUtils.completeProxiedInterfaces(as);
 		assertEquals(2, completedInterfaces.length);
@@ -51,6 +52,7 @@ public class AopProxyUtilsTests {
 
 	@Test
 	public void testCompleteProxiedInterfacesWorksWithNullOpaque() {
+		System.out.println("opaque = true 后,不包含Advised接口");
 		AdvisedSupport as = new AdvisedSupport();
 		as.setOpaque(true);
 		Class<?>[] completedInterfaces = AopProxyUtils.completeProxiedInterfaces(as);
@@ -91,6 +93,7 @@ public class AopProxyUtilsTests {
 	@Test
 	public void testCompleteProxiedInterfacesAdvisedNotIncludedOpaque() {
 		AdvisedSupport as = new AdvisedSupport();
+		//排除掉Advised接口
 		as.setOpaque(true);
 		as.addInterface(ITestBean.class);
 		as.addInterface(Comparable.class);

@@ -188,6 +188,7 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping {
 		// Parse path pattern
 		urlPath = prependLeadingSlash(urlPath);
 		PathPattern pattern = getPathPatternParser().parse(urlPath);
+		//url已经注册
 		if (this.handlerMap.containsKey(pattern)) {
 			Object existingHandler = this.handlerMap.get(pattern);
 			if (existingHandler != null && existingHandler != resolvedHandler) {
@@ -197,7 +198,7 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping {
 			}
 		}
 
-		// Eagerly resolve handler if referencing singleton via name.
+		// 如果是lazyInitHandlers=false,则从容器中获取handler
 		if (!this.lazyInitHandlers && handler instanceof String) {
 			String handlerName = (String) handler;
 			if (obtainApplicationContext().isSingleton(handlerName)) {

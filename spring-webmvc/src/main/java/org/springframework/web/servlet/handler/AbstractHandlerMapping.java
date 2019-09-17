@@ -46,27 +46,16 @@ import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.util.UrlPathHelper;
 
 /**
- * Abstract base class for {@link org.springframework.web.servlet.HandlerMapping}
- * implementations. Supports ordering, a default handler, handler interceptors,
+ *
+ * Supports ordering, a default handler, handler interceptors,
  * including handler interceptors mapped by path patterns.
  *
- * <p>Note: This base class does <i>not</i> support exposure of the
- * {@link #PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE}. Support for this attribute
- * is up to concrete subclasses, typically based on request URL mappings.
- *
- * @author Juergen Hoeller
- * @author Rossen Stoyanchev
- * @since 07.04.2003
- * @see #getHandlerInternal
- * @see #setDefaultHandler
- * @see #setAlwaysUseFullPath
- * @see #setUrlDecode
- * @see org.springframework.util.AntPathMatcher
- * @see #setInterceptors
- * @see org.springframework.web.servlet.HandlerInterceptor
  */
 public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport implements HandlerMapping, Ordered {
 
+	/**
+	 * 默认handler
+	 */
 	@Nullable
 	private Object defaultHandler;
 
@@ -239,29 +228,22 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 	 */
 	@Override
 	protected void initApplicationContext() throws BeansException {
+		logger.info("扩展拦截器");
 		extendInterceptors(this.interceptors);
+		logger.info("检测所有的拦截器");
 		detectMappedInterceptors(this.adaptedInterceptors);
+		logger.info("初始化拦截器");
 		initInterceptors();
 	}
 
 	/**
-	 * Extension hook that subclasses can override to register additional interceptors,
-	 * given the configured interceptors (see {@link #setInterceptors}).
-	 * <p>Will be invoked before {@link #initInterceptors()} adapts the specified
-	 * interceptors into {@link HandlerInterceptor} instances.
-	 * <p>The default implementation is empty.
-	 * @param interceptors the configured interceptor List (never {@code null}), allowing
-	 * to add further interceptors before as well as after the existing interceptors
+	 * 扩展钩子,子类可以重写注册额外的拦截器
 	 */
 	protected void extendInterceptors(List<Object> interceptors) {
 	}
 
 	/**
-	 * Detect beans of type {@link MappedInterceptor} and add them to the list of mapped interceptors.
-	 * <p>This is called in addition to any {@link MappedInterceptor}s that may have been provided
-	 * via {@link #setInterceptors}, by default adding all beans of type {@link MappedInterceptor}
-	 * from the current context and its ancestors. Subclasses can override and refine this policy.
-	 * @param mappedInterceptors an empty list to add {@link MappedInterceptor} instances to
+	 * 检测MappedInterceptor 类型的Bean,并把他们加入到拦截器中
 	 */
 	protected void detectMappedInterceptors(List<HandlerInterceptor> mappedInterceptors) {
 		mappedInterceptors.addAll(

@@ -21,8 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.lang.Nullable;
 
 /**
- * Interface to be implemented by objects that define a mapping between
- * requests and handler objects.
+ *<h2>请求与 handler 之间的映射</h2>
  *
  * <p>This class can be implemented by application developers, although this is not
  * necessary, as {@link org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping}

@@ -33,7 +33,7 @@ import org.springframework.beans.factory.Aware;
 public interface ServletContextAware extends Aware {
 
 	/**
-	 * Set the {@link ServletContext} that this object runs in.
+	 * 设置当前对象运行在的servlet 上下文
 	 * <p>Invoked after population of normal bean properties but before an init
 	 * callback like InitializingBean's {@code afterPropertiesSet} or a
 	 * custom init-method. Invoked after ApplicationContextAware's

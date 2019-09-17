@@ -38,12 +38,14 @@ public class MethodInvocationTests {
 	@Test
 	public void testValidInvocation() throws Throwable {
 		Method m = Object.class.getMethod("hashCode");
+		//被代理的对象
 		Object proxy = new Object();
 		final Object returnValue = new Object();
 		List<Object> is = new LinkedList<>();
 		is.add(new MethodInterceptor() {
 			@Override
 			public Object invoke(MethodInvocation invocation) throws Throwable {
+				System.out.println("调用 invoke方法");
 				return returnValue;
 			}
 		});

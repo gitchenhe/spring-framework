@@ -499,7 +499,9 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		long startTime = System.currentTimeMillis();
 
 		try {
+			logger.info("初始化 [WebApplicationContext]");
 			this.webApplicationContext = initWebApplicationContext();
+			logger.info("初始化 [FrameworkServlet]");
 			initFrameworkServlet();
 		}
 		catch (ServletException | RuntimeException ex) {
@@ -524,8 +526,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	 * @see #setContextConfigLocation
 	 */
 	protected WebApplicationContext initWebApplicationContext() {
-		WebApplicationContext rootContext =
-				WebApplicationContextUtils.getWebApplicationContext(getServletContext());
+		WebApplicationContext rootContext = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
 		WebApplicationContext wac = null;
 
 		if (this.webApplicationContext != null) {
@@ -554,6 +555,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		}
 		if (wac == null) {
 			// No context instance is defined for this servlet -> create a local one
+			logger.info("创建 [WebApplicationContext]");
 			wac = createWebApplicationContext(rootContext);
 		}
 
@@ -640,6 +642,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		if (configLocation != null) {
 			wac.setConfigLocation(configLocation);
 		}
+		logger.info("配置并刷新 [WebApplicationContext]");
 		configureAndRefreshWebApplicationContext(wac);
 
 		return wac;
@@ -672,8 +675,10 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 			((ConfigurableWebEnvironment) env).initPropertySources(getServletContext(), getServletConfig());
 		}
 
+		logger.info("[postProcessWebApplicationContext]");
 		postProcessWebApplicationContext(wac);
 		applyInitializers(wac);
+		logger.info("刷新 [ApplicationContext]");
 		wac.refresh();
 	}
 
@@ -963,6 +968,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	protected final void processRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
+		//标记请求进来的时间
 		long startTime = System.currentTimeMillis();
 		Throwable failureCause = null;
 

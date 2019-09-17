@@ -28,17 +28,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.util.WebUtils;
 
 /**
- * Convenient superclass for application objects running in a {@link WebApplicationContext}.
- * Provides {@code getWebApplicationContext()}, {@code getServletContext()}, and
- * {@code getTempDir()} accessors.
- *
- * <p>Note: It is generally recommended to use individual callback interfaces for the actual
- * callbacks needed. This broad base class is primarily intended for use within the framework,
- * in case of {@link ServletContext} access etc typically being needed.
- *
- * @author Juergen Hoeller
- * @since 28.08.2003
- * @see SpringBeanAutowiringSupport
+ * 方便运行于 WebApplicationContext中的对象获取 WebApplicationContext,ServletContext
  */
 public abstract class WebApplicationObjectSupport extends ApplicationObjectSupport implements ServletContextAware {
 
@@ -50,6 +40,7 @@ public abstract class WebApplicationObjectSupport extends ApplicationObjectSuppo
 	public final void setServletContext(ServletContext servletContext) {
 		if (servletContext != this.servletContext) {
 			this.servletContext = servletContext;
+			logger.info("初始化 [ServletContext]");
 			initServletContext(servletContext);
 		}
 	}
@@ -69,8 +60,6 @@ public abstract class WebApplicationObjectSupport extends ApplicationObjectSuppo
 	}
 
 	/**
-	 * Calls {@link #initServletContext(javax.servlet.ServletContext)} if the
-	 * given ApplicationContext is a {@link WebApplicationContext}.
 	 */
 	@Override
 	protected void initApplicationContext(ApplicationContext context) {
@@ -78,6 +67,7 @@ public abstract class WebApplicationObjectSupport extends ApplicationObjectSuppo
 		if (this.servletContext == null && context instanceof WebApplicationContext) {
 			this.servletContext = ((WebApplicationContext) context).getServletContext();
 			if (this.servletContext != null) {
+				logger.info("初始化[ApplicationContext -> ServletContext]");
 				initServletContext(this.servletContext);
 			}
 		}

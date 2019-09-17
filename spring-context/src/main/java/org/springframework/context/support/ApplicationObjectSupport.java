@@ -27,24 +27,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
- * Convenient superclass for application objects that want to be aware of
- * the application context, e.g. for custom lookup of collaborating beans
- * or for context-specific resource access. It saves the application
- * context reference and provides an initialization callback method.
- * Furthermore, it offers numerous convenience methods for message lookup.
- *
- * <p>There is no requirement to subclass this class: It just makes things
- * a little easier if you need access to the context, e.g. for access to
- * file resources or to the message source. Note that many application
- * objects do not need to be aware of the application context at all,
- * as they can receive collaborating beans via bean references.
- *
- * <p>Many framework classes are derived from this class, particularly
- * within the web support.
- *
- * @author Rod Johnson
- * @author Juergen Hoeller
- * @see org.springframework.web.context.support.WebApplicationObjectSupport
+ * 方便应用里的对象感知到 application context
  */
 public abstract class ApplicationObjectSupport implements ApplicationContextAware {
 
@@ -62,6 +45,7 @@ public abstract class ApplicationObjectSupport implements ApplicationContextAwar
 
 	@Override
 	public final void setApplicationContext(@Nullable ApplicationContext context) throws BeansException {
+		//上下文为空,并且当前对象不需要运行在application context中
 		if (context == null && !isContextRequired()) {
 			// Reset internal context state.
 			this.applicationContext = null;
@@ -75,6 +59,7 @@ public abstract class ApplicationObjectSupport implements ApplicationContextAwar
 			}
 			this.applicationContext = context;
 			this.messageSourceAccessor = new MessageSourceAccessor(context);
+			logger.info("初始化[applicationContext]");
 			initApplicationContext(context);
 		}
 		else {
@@ -88,11 +73,7 @@ public abstract class ApplicationObjectSupport implements ApplicationContextAwar
 	}
 
 	/**
-	 * Determine whether this application object needs to run in an ApplicationContext.
-	 * <p>Default is "false". Can be overridden to enforce running in a context
-	 * (i.e. to throw IllegalStateException on accessors if outside a context).
-	 * @see #getApplicationContext
-	 * @see #getMessageSourceAccessor
+	 * 当前对象是否必须运行在application context中
 	 */
 	protected boolean isContextRequired() {
 		return false;

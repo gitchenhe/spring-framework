@@ -161,19 +161,21 @@ public abstract class AbstractController extends WebContentGenerator implements 
 
 		// Delegate to WebContentGenerator for checking and preparing.
 		checkRequest(request);
+
 		prepareResponse(response);
 
-		// Execute handleRequestInternal in synchronized block if required.
+		// 如果同一个会话要同步处理
 		if (this.synchronizeOnSession) {
 			HttpSession session = request.getSession(false);
 			if (session != null) {
+				//会话存在
 				Object mutex = WebUtils.getSessionMutex(session);
 				synchronized (mutex) {
 					return handleRequestInternal(request, response);
 				}
 			}
 		}
-
+		//会话不存在
 		return handleRequestInternal(request, response);
 	}
 

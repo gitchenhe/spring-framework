@@ -31,38 +31,15 @@ import org.springframework.core.BridgeMethodResolver;
 import org.springframework.lang.Nullable;
 
 /**
- * Spring's implementation of the AOP Alliance
- * {@link org.aopalliance.intercept.MethodInvocation} interface,
- * implementing the extended
- * {@link org.springframework.aop.ProxyMethodInvocation} interface.
+ * <h1>反射方法调用</h1>
+ * Spring的AOP实现联盟接口实现扩展
  *
- * <p>Invokes the target object using reflection. Subclasses can override the
- * {@link #invokeJoinpoint()} method to change this behavior, so this is also
- * a useful base class for more specialized MethodInvocation implementations.
+ * <p>使用反射调用目标对象,子类可重写invokeJoinpoint() 改变行为</p>
  *
- * <p>It is possible to clone an invocation, to invoke {@link #proceed()}
- * repeatedly (once per clone), using the {@link #invocableClone()} method.
- * It is also possible to attach custom attributes to the invocation,
- * using the {@link #setUserAttribute} / {@link #getUserAttribute} methods.
- *
- * <p><b>NOTE:</b> This class is considered internal and should not be
- * directly accessed. The sole reason for it being public is compatibility
- * with existing framework integrations (e.g. Pitchfork). For any other
- * purposes, use the {@link ProxyMethodInvocation} interface instead.
- *
- * @author Rod Johnson
- * @author Juergen Hoeller
- * @author Adrian Colyer
- * @see #invokeJoinpoint
- * @see #proceed
- * @see #invocableClone
- * @see #setUserAttribute
- * @see #getUserAttribute
  */
 public class ReflectiveMethodInvocation implements ProxyMethodInvocation, Cloneable {
 
 	protected final Object proxy;
-
 	@Nullable
 	protected final Object target;
 

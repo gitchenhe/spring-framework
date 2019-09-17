@@ -38,7 +38,7 @@ import static org.mockito.Mockito.withSettings;
  */
 public class SharedEntityManagerCreatorTests {
 
-	@Test
+	/*@Test
 	public void proxyingWorksIfInfoReturnsNullEntityManagerInterface() {
 		EntityManagerFactory emf = mock(EntityManagerFactory.class,
 				withSettings().extraInterfaces(EntityManagerFactoryInfo.class));
@@ -150,6 +150,6 @@ public class SharedEntityManagerCreatorTests {
 
 		verify(query).getResultStream();
 		verify(targetEm).close();
-	}
+	}*/
 
 }

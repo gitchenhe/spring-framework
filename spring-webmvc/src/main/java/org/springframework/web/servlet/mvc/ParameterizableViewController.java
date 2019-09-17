@@ -146,6 +146,7 @@ public class ParameterizableViewController extends AbstractController {
 		String viewName = getViewName();
 
 		if (getStatusCode() != null) {
+			//重定向
 			if (getStatusCode().is3xxRedirection()) {
 				request.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, getStatusCode());
 				viewName = (viewName != null && !viewName.startsWith("redirect:") ? "redirect:" + viewName : viewName);

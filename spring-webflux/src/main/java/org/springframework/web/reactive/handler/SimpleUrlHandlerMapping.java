@@ -99,6 +99,7 @@ public class SimpleUrlHandlerMapping extends AbstractUrlHandlerMapping {
 	@Override
 	public void initApplicationContext() throws BeansException {
 		super.initApplicationContext();
+		logger.info("注册handler");
 		registerHandlers(this.urlMap);
 	}
 

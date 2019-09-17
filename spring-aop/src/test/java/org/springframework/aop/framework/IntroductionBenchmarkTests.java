@@ -64,19 +64,19 @@ public class IntroductionBenchmarkTests {
 
 		Counter counter = (Counter) proxy;
 
-		sw.start(INVOCATIONS + " invocations on proxy, not hitting introduction");
+		sw.start(INVOCATIONS + " 调用代理对象的方法");
 		for (int i = 0; i < INVOCATIONS; i++) {
 			proxy.getAge();
 		}
 		sw.stop();
 
-		sw.start(INVOCATIONS + " invocations on proxy, hitting introduction");
+		sw.start(INVOCATIONS + " 调用代理对象的 introduction 方法");
 		for (int i = 0; i < INVOCATIONS; i++) {
 			counter.getCount();
 		}
 		sw.stop();
 
-		sw.start(INVOCATIONS + " invocations on target");
+		sw.start(INVOCATIONS + " 直接调用对象的方法");
 		for (int i = 0; i < INVOCATIONS; i++) {
 			target.getAge();
 		}
