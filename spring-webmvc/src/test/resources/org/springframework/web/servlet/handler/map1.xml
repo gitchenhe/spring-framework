@@ -8,4 +8,5 @@
 	<bean id="godCtrl" name="/ /mypath/welcome.html /mypath/show.html /mypath/bookseats.html /mypath/reservation.html /mypath/payment.html /mypath/confirmation.html /mypath/test*"
 			class="java.lang.Object"/>
 
+	<bean id="myHandler" name="/myHandler.do" class="org.springframework.web.servlet.my.HandlerTest$MyHandler"/>
 </beans>

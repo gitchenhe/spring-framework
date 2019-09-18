@@ -495,14 +495,23 @@ public class DispatcherServlet extends FrameworkServlet {
 	 * <p>May be overridden in subclasses in order to initialize further strategy objects.
 	 */
 	protected void initStrategies(ApplicationContext context) {
+		logger.info("初始化: [ MultipartResolver ]");
 		initMultipartResolver(context);
+		logger.info("初始化: [ LocaleResolver ]");
 		initLocaleResolver(context);
+		logger.info("初始化: [ ThemeResolver ]");
 		initThemeResolver(context);
+		logger.info("初始化: [ HandlerMappings ]");
 		initHandlerMappings(context);
+		logger.info("初始化: [ HandlerAdapters ]");
 		initHandlerAdapters(context);
+		logger.info("初始化: [ HandlerExceptionResolvers ]");
 		initHandlerExceptionResolvers(context);
+		logger.info("初始化: [ RequestToViewNameTranslator ]");
 		initRequestToViewNameTranslator(context);
+		logger.info("初始化: [ ViewResolvers ]");
 		initViewResolvers(context);
+		logger.info("初始化: [ FlashMapManager ]");
 		initFlashMapManager(context);
 	}
 
@@ -1008,6 +1017,7 @@ public class DispatcherServlet extends FrameworkServlet {
 				// making them available for @ExceptionHandler methods and other scenarios.
 				dispatchException = new NestedServletException("Handler dispatch failed", err);
 			}
+			logger.info("处理ModelView结果");
 			processDispatchResult(processedRequest, response, mappedHandler, mv, dispatchException);
 		}
 		catch (Exception ex) {
@@ -1367,6 +1377,7 @@ public class DispatcherServlet extends FrameworkServlet {
 
 		if (this.viewResolvers != null) {
 			for (ViewResolver viewResolver : this.viewResolvers) {
+				logger.info("尝试使用 [ " + viewResolver.getClass() + " ] 解析");
 				View view = viewResolver.resolveViewName(viewName, locale);
 				if (view != null) {
 					return view;
