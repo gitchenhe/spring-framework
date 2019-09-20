@@ -35,20 +35,28 @@ import org.springframework.transaction.TransactionTimedOutException;
  */
 public abstract class ResourceHolderSupport implements ResourceHolder {
 
+	/**
+	 * 事务同步
+	 */
 	private boolean synchronizedWithTransaction = false;
-
+	/**
+	 * 回滚
+	 */
 	private boolean rollbackOnly = false;
 
 	@Nullable
 	private Date deadline;
 
+	/**
+	 * 引用数量
+	 */
 	private int referenceCount = 0;
 
 	private boolean isVoid = false;
 
 
 	/**
-	 * Mark the resource as synchronized with a transaction.
+	 * 标记为同步事务
 	 */
 	public void setSynchronizedWithTransaction(boolean synchronizedWithTransaction) {
 		this.synchronizedWithTransaction = synchronizedWithTransaction;
@@ -62,7 +70,7 @@ public abstract class ResourceHolderSupport implements ResourceHolder {
 	}
 
 	/**
-	 * Mark the resource transaction as rollback-only.
+	 * 标记事务回滚
 	 */
 	public void setRollbackOnly() {
 		this.rollbackOnly = true;
@@ -87,7 +95,7 @@ public abstract class ResourceHolderSupport implements ResourceHolder {
 	}
 
 	/**
-	 * Set the timeout for this object in seconds.
+	 * 设置对象的超时秒
 	 * @param seconds number of seconds until expiration
 	 */
 	public void setTimeoutInSeconds(int seconds) {
@@ -110,8 +118,7 @@ public abstract class ResourceHolderSupport implements ResourceHolder {
 	}
 
 	/**
-	 * Return the expiration deadline of this object.
-	 * @return the deadline as Date object
+	 * 返回该对象的到期时间
 	 */
 	@Nullable
 	public Date getDeadline() {
@@ -119,10 +126,8 @@ public abstract class ResourceHolderSupport implements ResourceHolder {
 	}
 
 	/**
-	 * Return the time to live for this object in seconds.
+	 * 返回对象生存时间秒
 	 * Rounds up eagerly, e.g. 9.00001 still to 10.
-	 * @return number of seconds until expiration
-	 * @throws TransactionTimedOutException if the deadline has already been reached
 	 */
 	public int getTimeToLiveInSeconds() {
 		double diff = ((double) getTimeToLiveInMillis()) / 1000;

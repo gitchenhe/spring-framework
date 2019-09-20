@@ -100,6 +100,7 @@ public class TransactionInterceptorTests extends AbstractTransactionAspectTests 
 
 	@Test
 	public void serializableWithCompositeSource() throws Exception {
+
 		NameMatchTransactionAttributeSource tas1 = new NameMatchTransactionAttributeSource();
 		Properties props = new Properties();
 		props.setProperty("methodName", "PROPAGATION_REQUIRED");
@@ -110,15 +111,19 @@ public class TransactionInterceptorTests extends AbstractTransactionAspectTests 
 		props.setProperty("otherMethodName", "PROPAGATION_REQUIRES_NEW");
 		tas2.setProperties(props);
 
-		TransactionInterceptor ti = new TransactionInterceptor();
-		ti.setTransactionAttributeSources(tas1, tas2);
-		PlatformTransactionManager ptm = new SerializableTransactionManager();
-		ti.setTransactionManager(ptm);
-		ti = (TransactionInterceptor) SerializationTestUtils.serializeAndDeserialize(ti);
+		//事务拦截器
+		TransactionInterceptor transactionInterceptor = new TransactionInterceptor();
+		transactionInterceptor.setTransactionAttributeSources(tas1, tas2);
 
-		assertTrue(ti.getTransactionManager() instanceof SerializableTransactionManager);
-		assertTrue(ti.getTransactionAttributeSource() instanceof CompositeTransactionAttributeSource);
-		CompositeTransactionAttributeSource ctas = (CompositeTransactionAttributeSource) ti.getTransactionAttributeSource();
+		//事务管理器
+		PlatformTransactionManager transactionManager = new SerializableTransactionManager();
+		transactionInterceptor.setTransactionManager(transactionManager);
+		transactionInterceptor = (TransactionInterceptor) SerializationTestUtils.serializeAndDeserialize(transactionInterceptor);
+
+		assertTrue(transactionInterceptor.getTransactionManager() instanceof SerializableTransactionManager);
+		assertTrue(transactionInterceptor.getTransactionAttributeSource() instanceof CompositeTransactionAttributeSource);
+
+		CompositeTransactionAttributeSource ctas = (CompositeTransactionAttributeSource) transactionInterceptor.getTransactionAttributeSource();
 		assertTrue(ctas.getTransactionAttributeSources()[0] instanceof NameMatchTransactionAttributeSource);
 		assertTrue(ctas.getTransactionAttributeSources()[1] instanceof NameMatchTransactionAttributeSource);
 	}

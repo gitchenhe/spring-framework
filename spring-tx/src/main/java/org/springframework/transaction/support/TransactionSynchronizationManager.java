@@ -128,15 +128,12 @@ public abstract class TransactionSynchronizationManager {
 	}
 
 	/**
-	 * Retrieve a resource for the given key that is bound to the current thread.
-	 * @param key the key to check (usually the resource factory)
-	 * @return a value bound to the current thread (usually the active
-	 * resource object), or {@code null} if none
-	 * @see ResourceTransactionManager#getResourceFactory()
+	 * 从ThreadLocal中获取给定key的值
 	 */
 	@Nullable
 	public static Object getResource(Object key) {
 		Object actualKey = TransactionSynchronizationUtils.unwrapResourceIfNecessary(key);
+		//从ThreadLocal中获取key的值
 		Object value = doGetResource(actualKey);
 		if (value != null && logger.isTraceEnabled()) {
 			logger.trace("Retrieved value [" + value + "] for key [" + actualKey + "] bound to thread [" +
@@ -183,6 +180,7 @@ public abstract class TransactionSynchronizationManager {
 			map = new HashMap<>();
 			resources.set(map);
 		}
+		//将value绑定到当前线程
 		Object oldValue = map.put(actualKey, value);
 		// Transparently suppress a ResourceHolder that was marked as void...
 		if (oldValue instanceof ResourceHolder && ((ResourceHolder) oldValue).isVoid()) {
@@ -300,20 +298,14 @@ public abstract class TransactionSynchronizationManager {
 	}
 
 	/**
-	 * Return an unmodifiable snapshot list of all registered synchronizations
-	 * for the current thread.
-	 * @return unmodifiable List of TransactionSynchronization instances
-	 * @throws IllegalStateException if synchronization is not active
-	 * @see TransactionSynchronization
+	 * 返回一个不可修改的列表,内容为注册到当前线程上的,需要同步处理的操作
 	 */
 	public static List<TransactionSynchronization> getSynchronizations() throws IllegalStateException {
 		Set<TransactionSynchronization> synchs = synchronizations.get();
 		if (synchs == null) {
 			throw new IllegalStateException("Transaction synchronization is not active");
 		}
-		// Return unmodifiable snapshot, to avoid ConcurrentModificationExceptions
-		// while iterating and invoking synchronization callbacks that in turn
-		// might register further synchronizations.
+		// 返回一个不可修改的快照,
 		if (synchs.isEmpty()) {
 			return Collections.emptyList();
 		}

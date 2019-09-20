@@ -16,12 +16,7 @@
 
 package org.springframework.jdbc.datasource;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Savepoint;
-import java.sql.Statement;
+import java.sql.*;
 import javax.sql.DataSource;
 
 import org.junit.After;
@@ -140,6 +135,10 @@ public class DataSourceTransactionManagerTests  {
 				assertTrue(TransactionSynchronizationManager.isActualTransactionActive());
 				Connection tCon = DataSourceUtils.getConnection(dsToUse);
 				try {
+					ResultSet resultSet = tCon.createStatement().executeQuery("select * from t_user");
+					while (resultSet.next()){
+						System.out.println(resultSet.toString());
+					}
 					if (createStatement) {
 						tCon.createStatement();
 					}

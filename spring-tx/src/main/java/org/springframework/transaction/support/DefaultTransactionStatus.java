@@ -22,45 +22,36 @@ import org.springframework.transaction.SavepointManager;
 import org.springframework.util.Assert;
 
 /**
- * Default implementation of the {@link org.springframework.transaction.TransactionStatus}
- * interface, used by {@link AbstractPlatformTransactionManager}. Based on the concept
- * of an underlying "transaction object".
- *
- * <p>Holds all status information that {@link AbstractPlatformTransactionManager}
- * needs internally, including a generic transaction object determined by the
- * concrete transaction manager implementation.
- *
- * <p>Supports delegating savepoint-related methods to a transaction object
- * that implements the {@link SavepointManager} interface.
- *
- * <p><b>NOTE:</b> This is <i>not</i> intended for use with other PlatformTransactionManager
- * implementations, in particular not for mock transaction managers in testing environments.
- * Use the alternative {@link SimpleTransactionStatus} class or a mock for the plain
- * {@link org.springframework.transaction.TransactionStatus} interface instead.
- *
- * @author Juergen Hoeller
- * @since 19.01.2004
- * @see AbstractPlatformTransactionManager
- * @see org.springframework.transaction.SavepointManager
- * @see #getTransaction
- * @see #createSavepoint
- * @see #rollbackToSavepoint
- * @see #releaseSavepoint
- * @see SimpleTransactionStatus
+ * <h2>事务状态</h2>
  */
 public class DefaultTransactionStatus extends AbstractTransactionStatus {
 
+	/**
+	 * 事务
+	 */
 	@Nullable
 	private final Object transaction;
 
+	/**
+	 * 新事务,
+	 */
 	private final boolean newTransaction;
 
+	/**
+	 * 也是新的事务,还未打开
+	 */
 	private final boolean newSynchronization;
 
+	/**
+	 * 只读
+	 */
 	private final boolean readOnly;
 
 	private final boolean debug;
 
+	/**
+	 * 挂起的资源
+	 */
 	@Nullable
 	private final Object suspendedResources;
 
@@ -70,7 +61,7 @@ public class DefaultTransactionStatus extends AbstractTransactionStatus {
 	 * @param transaction underlying transaction object that can hold state
 	 * for the internal transaction implementation
 	 * @param newTransaction if the transaction is new, otherwise participating
-	 * in an existing transaction
+	 * 	 * in an existing transaction
 	 * @param newSynchronization if a new transaction synchronization has been
 	 * opened for the given transaction
 	 * @param readOnly whether the transaction is marked as read-only

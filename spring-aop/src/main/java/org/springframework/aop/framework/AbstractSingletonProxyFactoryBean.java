@@ -27,6 +27,8 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.lang.Nullable;
 import org.springframework.util.ClassUtils;
 
+import java.util.logging.Logger;
+
 /**
  * Convenient superclass for {@link FactoryBean} types that produce singleton-scoped
  * proxy objects.
@@ -42,15 +44,25 @@ import org.springframework.util.ClassUtils;
 public abstract class AbstractSingletonProxyFactoryBean extends ProxyConfig
 		implements FactoryBean<Object>, BeanClassLoaderAware, InitializingBean {
 
+	Logger logger = Logger.getLogger(AbstractSingletonProxyFactoryBean.class.getSimpleName());
 	@Nullable
 	private Object target;
 
+	/**
+	 * 代理的接口
+	 */
 	@Nullable
 	private Class<?>[] proxyInterfaces;
 
+	/**
+	 * 进入代理方法前的拦截器
+	 */
 	@Nullable
 	private Object[] preInterceptors;
 
+	/**
+	 * 执行完代理方法后的拦截器
+	 */
 	@Nullable
 	private Object[] postInterceptors;
 
@@ -139,6 +151,7 @@ public abstract class AbstractSingletonProxyFactoryBean extends ProxyConfig
 
 	@Override
 	public void afterPropertiesSet() {
+
 		if (this.target == null) {
 			throw new IllegalArgumentException("Property 'target' is required");
 		}
@@ -153,15 +166,17 @@ public abstract class AbstractSingletonProxyFactoryBean extends ProxyConfig
 
 		if (this.preInterceptors != null) {
 			for (Object interceptor : this.preInterceptors) {
+				logger.info("添加前置拦截器 ["+ interceptor +"]");
 				proxyFactory.addAdvisor(this.advisorAdapterRegistry.wrap(interceptor));
 			}
 		}
 
-		// Add the main interceptor (typically an Advisor).
+		logger.info("添加 最重要的 [ Advisor ]");
 		proxyFactory.addAdvisor(this.advisorAdapterRegistry.wrap(createMainInterceptor()));
 
 		if (this.postInterceptors != null) {
 			for (Object interceptor : this.postInterceptors) {
+				logger.info("添加后置拦截器 ["+ interceptor +"]");
 				proxyFactory.addAdvisor(this.advisorAdapterRegistry.wrap(interceptor));
 			}
 		}

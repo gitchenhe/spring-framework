@@ -24,6 +24,7 @@ import java.io.Serializable;
  * @author Rod Johnson
  */
 @SuppressWarnings("serial")
+public
 class TrueClassFilter implements ClassFilter, Serializable {
 
 	public static final TrueClassFilter INSTANCE = new TrueClassFilter();
