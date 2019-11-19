@@ -259,7 +259,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					logger.debug("Returning cached instance of singleton bean '" + beanName + "'");
 				}
 			}
-			//获取实例,如果是FactoryBean,获取由它创建的实例
+			//判定sharedInstance的类型,如果是FactoryBean,就用FactoryBean来创建实例
 			bean = getObjectForBeanInstance(sharedInstance, name, beanName, null);
 		} else {
 			// 如果实例创建失败,有可能是正在解决循环引用中
@@ -299,7 +299,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				String[] dependsOn = mbd.getDependsOn();
 				if (dependsOn != null) {
 					for (String dep : dependsOn) {
-						//检查是否有循环依赖
+						//检查beanName是否被dep依赖
+						//如果为真,是有问题的,因为:beanName的初始化,要依赖dep,但是dep又依赖beanName,这时候出现了循环依赖.
 						if (isDependent(beanName, dep)) {
 							throw new BeanCreationException(mbd.getResourceDescription(), beanName,
 									"Circular depends-on relationship between '" + beanName + "' and '" + dep + "'");

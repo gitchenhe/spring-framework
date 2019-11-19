@@ -220,14 +220,17 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	@Override
 	public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) {
 		int registryId = System.identityHashCode(registry);
+		//注册后加工器
 		if (this.registriesPostProcessed.contains(registryId)) {
 			throw new IllegalStateException(
 					"postProcessBeanDefinitionRegistry already called on this post-processor against " + registry);
 		}
+		//工厂后加工器
 		if (this.factoriesPostProcessed.contains(registryId)) {
 			throw new IllegalStateException(
 					"postProcessBeanFactory already called on this post-processor against " + registry);
 		}
+
 		this.registriesPostProcessed.add(registryId);
 
 		processConfigBeanDefinitions(registry);
@@ -261,10 +264,12 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	 */
 	public void processConfigBeanDefinitions(BeanDefinitionRegistry registry) {
 		List<BeanDefinitionHolder> configCandidates = new ArrayList<>();
+		//获取所有的BeanDefine
 		String[] candidateNames = registry.getBeanDefinitionNames();
 
 		for (String beanName : candidateNames) {
 			BeanDefinition beanDef = registry.getBeanDefinition(beanName);
+
 			if (ConfigurationClassUtils.isFullConfigurationClass(beanDef) ||
 					ConfigurationClassUtils.isLiteConfigurationClass(beanDef)) {
 				if (logger.isDebugEnabled()) {
@@ -272,6 +277,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 				}
 			}
 			else if (ConfigurationClassUtils.checkConfigurationClassCandidate(beanDef, this.metadataReaderFactory)) {
+				//是否被@Configuration,@Component,@ComponentScan,@Import,@ImportResource,@Bean注解
 				configCandidates.add(new BeanDefinitionHolder(beanDef, beanName));
 			}
 		}

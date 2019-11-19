@@ -555,6 +555,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				registerListeners();
 
 				// 实例化剩余的单例.
+				logger.info("实例化剩余的单例");
 				finishBeanFactoryInitialization(beanFactory);
 
 				// Last step: publish corresponding event.

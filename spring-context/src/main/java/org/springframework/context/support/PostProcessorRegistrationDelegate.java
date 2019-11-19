@@ -54,6 +54,8 @@ final class PostProcessorRegistrationDelegate {
 		// Invoke BeanDefinitionRegistryPostProcessors first, if any.
 		Set<String> processedBeans = new HashSet<>();
 
+		//判断BeanFactory是否为BeanDefinitionRegistry,BeanFactory为DefaultListableBeanFactory,
+		//而DefaultListableBeanFactory实现了BeanDefinitionRegistry接口，因此这边为true
 		if (beanFactory instanceof BeanDefinitionRegistry) {
 			BeanDefinitionRegistry registry = (BeanDefinitionRegistry) beanFactory;
 			List<BeanFactoryPostProcessor> regularPostProcessors = new ArrayList<>();

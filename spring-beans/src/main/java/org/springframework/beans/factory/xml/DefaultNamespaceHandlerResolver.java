@@ -163,7 +163,7 @@ public class DefaultNamespaceHandlerResolver implements NamespaceHandlerResolver
 						logger.debug("Loading NamespaceHandler mappings from [" + this.handlerMappingsLocation + "]");
 					}
 					try {
-						logger.info("加载 spring.handlers");
+						logger.info("加载 spring.handlers,class loader = " + this.classLoader);
 						Properties mappings = PropertiesLoaderUtils.loadAllProperties(this.handlerMappingsLocation, this.classLoader);
 
 						if (logger.isDebugEnabled()) {
@@ -187,6 +187,11 @@ public class DefaultNamespaceHandlerResolver implements NamespaceHandlerResolver
 	@Override
 	public String toString() {
 		return "NamespaceHandlerResolver using mappings " + getHandlerMappings();
+	}
+
+	public static void main(String[] args) {
+		DefaultNamespaceHandlerResolver defaultNamespaceHandlerResolver = new DefaultNamespaceHandlerResolver();
+		defaultNamespaceHandlerResolver.resolve("bean");
 	}
 
 }

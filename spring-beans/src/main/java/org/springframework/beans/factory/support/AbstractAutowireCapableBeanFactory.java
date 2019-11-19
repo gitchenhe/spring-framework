@@ -1078,7 +1078,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			return obtainFromSupplier(instanceSupplier, beanName);
 		}
 
-		//通过FactoryMethod创建实例
+		//如果工厂方法存在,通过工厂方法创建实例
 		if (mbd.getFactoryMethodName() != null) {
 			return instantiateUsingFactoryMethod(beanName, mbd, args);
 		}
@@ -1094,9 +1094,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				}
 			}
 		}
+		//构造方法或工厂方法不为空
 		if (resolved) {
 			if (autowireNecessary) {
-				//使用构造函数初始化
+				//xml定义使用构造函数初始化
 				return autowireConstructor(beanName, mbd, null, null);
 			}
 			else {
@@ -1205,6 +1206,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 						getAccessControlContext());
 			}
 			else {
+				//通过实例化策略去创建Bean实例
 				beanInstance = getInstantiationStrategy().instantiate(mbd, beanName, parent);
 			}
 			BeanWrapper bw = new BeanWrapperImpl(beanInstance);

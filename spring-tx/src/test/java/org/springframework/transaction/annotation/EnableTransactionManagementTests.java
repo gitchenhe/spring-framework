@@ -255,7 +255,6 @@ public class EnableTransactionManagementTests {
 
 	@Configuration
 	static class TxManagerConfig {
-
 		@Bean
 		public TransactionalTestBean testBean() {
 			return new TransactionalTestBean();

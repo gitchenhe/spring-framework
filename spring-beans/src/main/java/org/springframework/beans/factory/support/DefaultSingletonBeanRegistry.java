@@ -188,11 +188,12 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 
 		//实例对象不存在,并且实例正在构建中
 		if (singletonObject == null && isSingletonCurrentlyInCreation(beanName)) {
+
 			synchronized (this.singletonObjects) {
 				//再次判断实例是否已经存在
 				singletonObject = this.earlySingletonObjects.get(beanName);
 
-				//对象未创建.并且 允许早起的引用
+				//对象未创建.并且 允许早期的引用
 				if (singletonObject == null && allowEarlyReference) {
 					//获取对象工厂类
 					ObjectFactory<?> singletonFactory = this.singletonFactories.get(beanName);
@@ -471,6 +472,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 		if (dependentBeans == null) {
 			return false;
 		}
+		//说明dependentBeanName依赖了beanName
 		if (dependentBeans.contains(dependentBeanName)) {
 			return true;
 		}

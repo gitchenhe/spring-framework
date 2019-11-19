@@ -85,6 +85,8 @@ abstract class ConfigurationClassUtils {
 		}
 
 		AnnotationMetadata metadata;
+
+		//如果是注解
 		if (beanDef instanceof AnnotatedBeanDefinition &&
 				className.equals(((AnnotatedBeanDefinition) beanDef).getMetadata().getClassName())) {
 			// Can reuse the pre-parsed metadata from the given BeanDefinition...
@@ -109,10 +111,12 @@ abstract class ConfigurationClassUtils {
 			}
 		}
 
+		//如果被@Configuration注解
 		if (isFullConfigurationCandidate(metadata)) {
 			beanDef.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_FULL);
 		}
 		else if (isLiteConfigurationCandidate(metadata)) {
+			//被@Component,@ComponentScan,@Import,@ImportResource,@Bean注解
 			beanDef.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_LITE);
 		}
 		else {

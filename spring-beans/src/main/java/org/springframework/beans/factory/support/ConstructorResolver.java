@@ -366,7 +366,9 @@ class ConstructorResolver {
 		boolean isStatic;
 
 		String factoryBeanName = mbd.getFactoryBeanName();
+		//class的factoryBean不为空
 		if (factoryBeanName != null) {
+			//class的factoryBean不能是自己
 			if (factoryBeanName.equals(beanName)) {
 				throw new BeanDefinitionStoreException(mbd.getResourceDescription(), beanName,
 						"factory-bean reference points back to the same bean definition");
